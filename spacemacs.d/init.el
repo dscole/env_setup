@@ -754,6 +754,9 @@ you should place your code here."
    (quote
     ("--user-data-dir=/spare/local/dcole/google-chrome" " %U")))
  '(browse-url-chromium-program "google-chrome-stable")
+ '(custom-theme-load-path
+   (quote
+    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)))
  '(desktop-save-mode t)
  '(display-time-mode t)
  '(electric-indent-mode nil)
@@ -764,7 +767,7 @@ you should place your code here."
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(magit-diff-use-overlays nil)
  '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
- '(org-agenda-files (quote ("/spare/local/dcole/spacemacs/org/")))
+ '(org-agenda-files (quote ("~/org/")))
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-refile-allow-creating-parent-nodes (quote confirm))
