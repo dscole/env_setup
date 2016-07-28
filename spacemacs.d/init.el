@@ -767,7 +767,7 @@ you should place your code here."
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(magit-diff-use-overlays nil)
  '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
- '(org-agenda-files (quote ("~/org/")))
+ '(org-agenda-files (quote ("~/org/" "~/org/personal_org")))
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-refile-allow-creating-parent-nodes (quote confirm))
