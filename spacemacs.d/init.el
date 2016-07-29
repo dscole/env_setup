@@ -664,7 +664,41 @@ you should place your code here."
   ;;;;;   --------------------- rtags (END) ------------------------------ ;;;;
 
   ;;;;;   --------------------- org-mode (START) ------------------------------ ;;;;
-  (with-eval-after-load 'org
+
+  ;; Taken from [http://koenig-haunstetten.de/2016/07/09/code-snippet-for-orgmode-e05s02/]
+  ;; and [https://youtu.be/0TS3pTNGFIA?list=PLVtKhBrRV_ZkPnBtt_TD1Cs9PJlU0IIdE]
+  (defun my/org-add-ids-to-headlines-in-file ()
+    "Add ID properties to all headlines in the current file which
+do not already have one."
+    (interactive)
+    (org-map-entries 'org-id-get-create)
+    )
+
+  (defun my/copy-id-to-clipboard()
+    "Copy the ID property value to killring,
+if no ID is there then create a new unique ID.
+This function works only in org-mode buffers.
+
+The purpose of this function is to easily construct id:-links to
+org-mode items. If its assigned to a key it saves you marking the
+text and copying to the killring."
+    (interactive)
+    (when (eq major-mode 'org-mode) ; do this only in org-mode buffers
+      (setq mytmpid (funcall 'org-id-get-create))
+      (kill-new mytmpid)
+      (message "Copied %s to killring (clipboard)" mytmpid)
+      )
+    )
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook 'my/org-add-ids-to-headlines-in-file nil 'local)
+              (local-set-key (kbd "<f5>") 'my/copy-id-to-clipboard)
+              (local-set-key  (kbd "C-c C-x C-i") 'org-clock-in)
+              )
+            )
+
+  ;; (with-eval-after-load 'org
   ;;   (define-key global-map [f8] 'remember)
   ;;   (define-key global-map [f9] 'remember-region)
 
@@ -738,7 +772,7 @@ you should place your code here."
   ;;   (add-hook 'remember-mode-hook 'org-remember-apply-template)
     ;; here goes your Org config :)
     ;; ....
-    )
+    ;; )
   ;;;;;   --------------------- org-mode (END) ------------------------------ ;;;;
 
   ;;;;;   ------------------- external-editor (START) -------------------- ;;;;
@@ -797,6 +831,7 @@ you should place your code here."
  '(magit-diff-use-overlays nil)
  '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
  '(org-agenda-files (quote ("~/org/" "~/org/personal_org")))
+ '(org-id-locations-file "~/org/personal_org/.org-id-locations")
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-refile-allow-creating-parent-nodes (quote confirm))
