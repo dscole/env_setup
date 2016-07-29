@@ -354,6 +354,8 @@ you should place your code here."
     (interactive)
     (print "============================= Push Personal Org ==================================="
            (get-buffer "rsync personal org"))
+    (print (format "Started at: %s" (current-time-string))
+           (get-buffer "rsync personal org"))
     (start-process "push-personal-org" "rsync personal org"
                   "rsync"
                     "-av"
@@ -367,6 +369,8 @@ you should place your code here."
   (defun pull-personal-org ()
     (interactive)
     (print "============================= Pull Personal Org ==================================="
+           (get-buffer "rsync personal org"))
+    (print (format "Started at: %s" (current-time-string))
            (get-buffer "rsync personal org"))
     (start-process "push-personal-org" "rsync personal org"
                    "rsync"
