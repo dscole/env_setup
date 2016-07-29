@@ -349,6 +349,35 @@ you should place your code here."
     (interactive "sString: \nnCount: ")
     (re-search-forward string nil nil count))
 
+  ;; sync files written in /spare/local/dcole/dev to norcompile5.skae
+  (defun push-personal-org ()
+    (interactive)
+    (print "============================= Push Personal Org ==================================="
+           (get-buffer "rsync personal org"))
+    (start-process "push-personal-org" "rsync personal org"
+                  "rsync"
+                    "-av"
+                    "--no-p"
+                    "--exclude" "@*"
+                    "-e" "ssh -p 37249"
+                    (expand-file-name "~/org/personal_org/")
+                    "dcole@mydcoledomain.ddns.net::org/")
+    )
+
+  (defun pull-personal-org ()
+    (interactive)
+    (print "============================= Pull Personal Org ==================================="
+           (get-buffer "rsync personal org"))
+    (start-process "push-personal-org" "rsync personal org"
+                   "rsync"
+                   "-av"
+                   "--no-p"
+                   "--exclude" "@*"
+                   "-e" "ssh -p 37249"
+                   "dcole@mydcoledomain.ddns.net::org/"
+                   (expand-file-name "~/org/personal_org/"))
+    )
+
   ;; (defun search-forward-prefix (count string)
   ;;   (interactive "p\nsString: ")
   ;;   (re-search-forward string nil nil count))
