@@ -341,8 +341,10 @@ you should place your code here."
     "Sync files from /spare/local/dcole/dev to norcompile5.skae"
     (save-window-excursion (async-shell-command (format "sync-to-skae.sh %s" buffer-file-name) nil nil)))
 
-  (add-hook 'after-save-hook #'sync-to-skae)
-  (add-hook 'after-revert-hook #'sync-to-skae)
+  (when (string= system-name "dcolelinux.ny.tower-research.com")
+    (add-hook 'after-save-hook #'sync-to-skae)
+    (add-hook 'after-revert-hook #'sync-to-skae)
+    )
 
   ;;Define function that accept a count for the search-forward
   (defun search-forward-count (string count)
