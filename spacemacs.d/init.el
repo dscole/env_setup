@@ -362,6 +362,7 @@ you should place your code here."
                   "rsync"
                     "-av"
                     "--no-p"
+                    "--delete"
                     "--exclude" "@*"
                     "-e" "ssh -p 37249"
                     (expand-file-name "~/org/personal_org/")
@@ -700,7 +701,8 @@ text and copying to the killring."
             (lambda ()
               (add-hook 'before-save-hook 'my/org-add-ids-to-headlines-in-file nil 'local)
               (local-set-key (kbd "<f5>") 'my/copy-id-to-clipboard)
-              (local-set-key  (kbd "C-c C-x C-i") 'org-clock-in)
+              (local-set-key (kbd "C-c C-x C-i") 'org-clock-in)
+              (local-set-key (kbd "C-c C-x <C-i>") 'org-clock-in)
               )
             )
 
