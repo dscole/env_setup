@@ -3,7 +3,7 @@
 
 (custom-theme-set-faces
  'my-spacemacs-wombat
- '(cursor ((t (:foreground "#DCDCCC" :background "SkyBlue2"))))
+ ;; '(cursor ((t (:foreground "#DCDCCC" :background "SkyBlue2"))))
  '(mouse ((t (:foreground "white"))))
  '(fixed-pitch ((t (:family "Monospace"))))
  '(variable-pitch ((t (:family "Sans Serif"))))
