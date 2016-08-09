@@ -20,7 +20,7 @@ values."
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
-   dotspacemacs-enable-lazy-installation 'unused
+   dotspacemacs-enable-lazy-installation nil
    ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
@@ -106,7 +106,7 @@ values."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'emacs
+   dotspacemacs-editing-style 'hybrid
    ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
    ;; Specify the startup banner. Default value is `official', it displays
@@ -327,6 +327,7 @@ you should place your code here."
             (lambda()
               (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
 
+  (spacemacs/set-leader-keys "ww" 'ace-window)
   ;;------------------ Set custom keybindings (END) -----------------------;;
 
   ;;;;; --------------------- Custom Functions (START) ---------------------;;;;
@@ -461,6 +462,7 @@ you should place your code here."
                 )
               )
     )
+  (evil-set-initial-state 'magit-mode 'emacs)
 
 
   (spacemacs/toggle-truncate-lines-on)
@@ -471,7 +473,8 @@ you should place your code here."
   ;; This creates a new spcaeline modeline named spaceline-ml-dcole-ml
   ;; See doc: https://github.com/TheBB/spaceline
   (spaceline-compile 'dcole-ml
-                     '(((point-position line-column))
+                     '(((point-position line-column)
+                        :face highlight-face)
                        anzu auto-compile
                        (buffer-modified buffer-size buffer-id remote-host)
                        major-mode
@@ -697,6 +700,14 @@ text and copying to the killring."
       )
     )
 
+  (add-hook 'evil-org-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook 'my/org-add-ids-to-headlines-in-file nil 'local)
+              (local-set-key (kbd "<f5>") 'my/copy-id-to-clipboard)
+              (local-set-key (kbd "RET") 'org-return-indent)
+              )
+            )
+
   (add-hook 'org-mode-hook
             (lambda ()
               (add-hook 'before-save-hook 'my/org-add-ids-to-headlines-in-file nil 'local)
@@ -811,6 +822,12 @@ text and copying to the killring."
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
   (load-theme 'my-spacemacs-wombat t)
+
+  ;; Start the emacs server so I can connect via emacsclient -t
+  (server-start)
+
+  ;; ESC doesn't work from emacsclient -t
+  (global-set-key (kbd "C-t") 'evil-force-normal-state)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -837,13 +854,13 @@ text and copying to the killring."
  '(global-hl-line-mode nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(magit-diff-use-overlays nil)
- '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
  '(org-agenda-files (quote ("~/org/" "~/org/personal_org")))
  '(org-id-locations-file "~/org/personal_org/.org-id-locations")
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-refile-allow-creating-parent-nodes (quote confirm))
  '(org-refile-use-outline-path (quote file))
+ '(org-return-follows-link t)
  '(paradox-automatically-star nil)
  '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
  '(rtags-use-helm t)
@@ -859,4 +876,5 @@ text and copying to the killring."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal)))))
+ '(default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal))))
+ '(aw-leading-char-face ((t (:foreground "chartreuse" :box (:line-width 2 :color "grey75" :style released-button) :height 10.0 :width normal)))))
