@@ -1,0 +1,5 @@
+# key: farg
+# name: arg_option
+# --
+parser.add_argument('-$1', '--$2',
+                    $0)
