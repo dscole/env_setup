@@ -1,0 +1,6 @@
+# key: pars
+# name: parse_args
+# --
+parser = argparse.ArgumentParser(description='$1',
+                                 formatter_class = argparse.ArgumentDefaultsHelpFormatter)
+$0

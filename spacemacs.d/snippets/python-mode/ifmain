@@ -1,0 +1,25 @@
+# key: ifm
+# name: ifmain
+# --
+import argparse
+
+
+def get_parser():
+    parser = argparse.ArgumentParser(
+         description="${1:desribe what this script does}",
+         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    return parser
+
+
+def parse_args():
+    parser = get_parser()
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    ${2:do main stuff}
+
+
+if __name__ == '__main__':
+    main(**parse_args().__dict__)

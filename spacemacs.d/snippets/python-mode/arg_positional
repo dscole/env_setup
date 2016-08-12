@@ -1,0 +1,5 @@
+# key: parg
+# name: arg_positional
+# --
+parser.add_argument('${1:varname}', $2)
+$0
