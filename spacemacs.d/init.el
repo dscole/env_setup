@@ -52,6 +52,7 @@ values."
      spell-checking
      syntax-checking
      ycmd
+     no-dots
      ;; better-defaults
      ;; (shell :variables
      ;;        shell-default-height 30
@@ -327,6 +328,8 @@ you should place your code here."
             (lambda()
               (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
 
+  (spacemacs/set-leader-keys "[" 'previous-multiframe-window)
+  (spacemacs/set-leader-keys "]" 'next-multiframe-window)
   (spacemacs/set-leader-keys "ww" 'ace-window)
   ;;------------------ Set custom keybindings (END) -----------------------;;
 
@@ -837,6 +840,7 @@ text and copying to the killring."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(avy-all-windows nil)
  '(browse-url-browser-function (quote browse-url-chromium))
  '(browse-url-chromium-arguments
    (quote
@@ -858,6 +862,7 @@ text and copying to the killring."
  '(org-id-locations-file "~/org/personal_org/.org-id-locations")
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
+ '(org-log-state-notes-insert-after-drawers t)
  '(org-refile-allow-creating-parent-nodes (quote confirm))
  '(org-refile-use-outline-path (quote file))
  '(org-return-follows-link t)
