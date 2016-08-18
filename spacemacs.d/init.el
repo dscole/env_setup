@@ -344,7 +344,12 @@ you should place your code here."
   ;; sync files written in /spare/local/dcole/dev to norcompile5.skae
   (defun sync-to-skae ()
     "Sync files from /spare/local/dcole/dev to norcompile5.skae"
-    (save-window-excursion (async-shell-command (format "sync-to-skae.sh %s" buffer-file-name) nil nil)))
+    (call-process-shell-command (format "sync-to-skae.sh %s &" buffer-file-name) nil nil 0)
+    )
+
+  ;; (defun sync-to-skae ()
+  ;;   "Sync files from /spare/local/dcole/dev to norcompile5.skae"
+  ;;   (save-window-excursion (async-shell-command (format "sync-to-skae.sh %s" buffer-file-name) nil nil)))
 
   (when (string= system-name "dcolelinux.ny.tower-research.com")
     (add-hook 'after-save-hook #'sync-to-skae)
@@ -441,6 +446,14 @@ you should place your code here."
 
   (with-eval-after-load 'company
     (global-set-key (kbd "<C-tab>") 'company-complete)
+    (push (apply-partially #'cl-remove-if
+                           (lambda (c)
+                             (or (string-match-p "[^\x00-\x7F]+" c)
+                                 (string-match-p "[0-9]+" c)
+                                 )
+                             )
+                           )
+          company-transformers)
     )
 
   (with-eval-after-load 'ycmd
@@ -832,6 +845,9 @@ text and copying to the killring."
 
   ;; ESC doesn't work from emacsclient -t
   (global-set-key (kbd "C-t") 'evil-force-normal-state)
+
+  ;; Remove whitespace-mode from undo-tree-visualize's diff buffer-name
+  (setq diff-mode-hook nil)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -847,6 +863,10 @@ text and copying to the killring."
    (quote
     ("--user-data-dir=/spare/local/dcole/google-chrome" " %U")))
  '(browse-url-chromium-program "google-chrome-stable")
+ '(compilation-skip-visited t)
+ '(custom-safe-themes
+   (quote
+    ("5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
  '(custom-theme-load-path
    (quote
     ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)))
@@ -854,11 +874,15 @@ text and copying to the killring."
  '(display-time-mode t)
  '(electric-indent-mode nil)
  '(eshell-scroll-show-maximum-output nil)
- '(evil-want-Y-yank-to-eol nil)
+ '(evil-emacs-state-modes
+   (quote
+    (archive-mode bbdb-mode biblio-selection-mode bookmark-bmenu-mode bookmark-edit-annotation-mode browse-kill-ring-mode bzr-annotate-mode calc-mode cfw:calendar-mode completion-list-mode Custom-mode debugger-mode delicious-search-mode desktop-menu-blist-mode desktop-menu-mode dvc-bookmarks-mode dvc-diff-mode dvc-info-buffer-mode dvc-log-buffer-mode dvc-revlist-mode dvc-revlog-mode dvc-status-mode dvc-tips-mode ediff-mode ediff-meta-mode efs-mode Electric-buffer-menu-mode emms-browser-mode emms-mark-mode emms-metaplaylist-mode emms-playlist-mode ess-help-mode etags-select-mode fj-mode gc-issues-mode gdb-breakpoints-mode gdb-disassembly-mode gdb-frames-mode gdb-locals-mode gdb-memory-mode gdb-registers-mode gdb-threads-mode gist-list-mode git-commit-mode git-rebase-mode gnus-article-mode gnus-browse-mode gnus-group-mode gnus-server-mode gnus-summary-mode google-maps-static-mode jde-javadoc-checker-report-mode magit-cherry-mode magit-diff-mode magit-log-mode magit-log-select-mode magit-popup-mode magit-popup-sequence-mode magit-process-mode magit-reflog-mode magit-refs-mode magit-revision-mode magit-stash-mode magit-stashes-mode magit-status-mode magit-branch-manager-mode magit-commit-mode magit-key-mode magit-rebase-mode magit-wazzup-mode mh-folder-mode monky-mode mu4e-main-mode mu4e-headers-mode mu4e-view-mode notmuch-hello-mode notmuch-search-mode notmuch-show-mode occur-mode org-agenda-mode pdf-outline-buffer-mode pdf-view-mode proced-mode rcirc-mode rebase-mode recentf-dialog-mode reftex-select-bib-mode reftex-select-label-mode reftex-toc-mode sldb-mode slime-inspector-mode slime-thread-control-mode slime-xref-mode sr-buttons-mode sr-mode sr-tree-mode sr-virtual-mode tar-mode tetris-mode tla-annotate-mode tla-archive-list-mode tla-bconfig-mode tla-bookmarks-mode tla-branch-list-mode tla-browse-mode tla-category-list-mode tla-changelog-mode tla-follow-symlinks-mode tla-inventory-file-mode tla-inventory-mode tla-lint-mode tla-logs-mode tla-revision-list-mode tla-revlog-mode tla-tree-lint-mode tla-version-list-mode twittering-mode urlview-mode vc-annotate-mode vc-dir-mode vc-git-log-view-mode vc-hg-log-view-mode vc-svn-log-view-mode vm-mode vm-summary-mode w3m-mode wab-compilation-mode xgit-annotate-mode xgit-changelog-mode xgit-diff-mode xgit-revlog-mode xhg-annotate-mode xhg-log-mode xhg-mode xhg-mq-mode xhg-mq-sub-mode xhg-status-extra-mode)))
+ '(evil-want-Y-yank-to-eol t)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2) (t . t))))
  '(global-hl-line-mode nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(magit-diff-use-overlays nil)
+ '(next-error-recenter (quote (4)))
  '(org-agenda-files (quote ("~/org/" "~/org/personal_org")))
  '(org-id-locations-file "~/org/personal_org/.org-id-locations")
  '(org-log-into-drawer t)
@@ -882,5 +906,5 @@ text and copying to the killring."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal))))
- '(aw-leading-char-face ((t (:foreground "chartreuse" :box (:line-width 2 :color "grey75" :style released-button) :height 10.0 :width normal)))))
+ '(aw-leading-char-face ((t (:foreground "chartreuse" :box nil :height 8.0 :width normal))))
+ '(whitespace-space ((t (:background "#313131" :foreground "#313131")))))
