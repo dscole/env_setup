@@ -489,11 +489,38 @@ you should place your code here."
   ;; set spaceline (modeline)
   ;; This creates a new spcaeline modeline named spaceline-ml-dcole-ml
   ;; See doc: https://github.com/TheBB/spaceline
+  (spaceline-define-segment version-control-dcole
+    "Version control information."
+    (when vc-mode
+      (powerline-raw
+       (replace-regexp-in-string "Git" ""
+                                 (s-trim (concat vc-mode
+                                                 (when (buffer-file-name)
+                                                   (pcase (vc-state (buffer-file-name))
+                                                     (`up-to-date " ")
+                                                     (`edited "*")
+                                                     (`added " Add")
+                                                     (`unregistered " ??")
+                                                     (`removed " Del")
+                                                     (`needs-merge " Con")
+                                                     (`needs-update " Upd")
+                                                     (`ignored " Ign")
+                                                     (_ " Unk")))))
+                                 )
+
+       )))
+
   (spaceline-compile 'dcole-ml
-                     '(((point-position line-column)
+                     '(((persp-name
+                         workspace-number
+                         window-number)
+                        :fallback evil-state
+                        :separator "|"
                         :face highlight-face)
-                       anzu auto-compile
+                       (point-position line-column)
                        (buffer-modified buffer-size buffer-id remote-host)
+                       anzu
+                       auto-compile
                        major-mode
                        (process :when active)
                        ((flycheck-error flycheck-warning flycheck-info)
@@ -501,7 +528,7 @@ you should place your code here."
                        (minor-modes :when active)
                        (mu4e-alert-segment :when active)
                        (erc-track :when active)
-                       (version-control :when active)
+                       (version-control-dcole :when active)
                        (org-pomodoro :when active)
                        (org-clock :when active)
                        nyan-cat)
@@ -722,6 +749,7 @@ text and copying to the killring."
               (add-hook 'before-save-hook 'my/org-add-ids-to-headlines-in-file nil 'local)
               (local-set-key (kbd "<f5>") 'my/copy-id-to-clipboard)
               (local-set-key (kbd "RET") 'org-return-indent)
+              (auto-fill-mode)
               )
             )
 
@@ -731,6 +759,7 @@ text and copying to the killring."
               (local-set-key (kbd "<f5>") 'my/copy-id-to-clipboard)
               (local-set-key (kbd "C-c C-x C-i") 'org-clock-in)
               (local-set-key (kbd "C-c C-x <C-i>") 'org-clock-in)
+              (auto-fill-mode)
               )
             )
 
@@ -876,24 +905,35 @@ text and copying to the killring."
  '(eshell-scroll-show-maximum-output nil)
  '(evil-emacs-state-modes
    (quote
-    (archive-mode bbdb-mode biblio-selection-mode bookmark-bmenu-mode bookmark-edit-annotation-mode browse-kill-ring-mode bzr-annotate-mode calc-mode cfw:calendar-mode completion-list-mode Custom-mode debugger-mode delicious-search-mode desktop-menu-blist-mode desktop-menu-mode dvc-bookmarks-mode dvc-diff-mode dvc-info-buffer-mode dvc-log-buffer-mode dvc-revlist-mode dvc-revlog-mode dvc-status-mode dvc-tips-mode ediff-mode ediff-meta-mode efs-mode Electric-buffer-menu-mode emms-browser-mode emms-mark-mode emms-metaplaylist-mode emms-playlist-mode ess-help-mode etags-select-mode fj-mode gc-issues-mode gdb-breakpoints-mode gdb-disassembly-mode gdb-frames-mode gdb-locals-mode gdb-memory-mode gdb-registers-mode gdb-threads-mode gist-list-mode git-commit-mode git-rebase-mode gnus-article-mode gnus-browse-mode gnus-group-mode gnus-server-mode gnus-summary-mode google-maps-static-mode jde-javadoc-checker-report-mode magit-cherry-mode magit-diff-mode magit-log-mode magit-log-select-mode magit-popup-mode magit-popup-sequence-mode magit-process-mode magit-reflog-mode magit-refs-mode magit-revision-mode magit-stash-mode magit-stashes-mode magit-status-mode magit-branch-manager-mode magit-commit-mode magit-key-mode magit-rebase-mode magit-wazzup-mode mh-folder-mode monky-mode mu4e-main-mode mu4e-headers-mode mu4e-view-mode notmuch-hello-mode notmuch-search-mode notmuch-show-mode occur-mode org-agenda-mode pdf-outline-buffer-mode pdf-view-mode proced-mode rcirc-mode rebase-mode recentf-dialog-mode reftex-select-bib-mode reftex-select-label-mode reftex-toc-mode sldb-mode slime-inspector-mode slime-thread-control-mode slime-xref-mode sr-buttons-mode sr-mode sr-tree-mode sr-virtual-mode tar-mode tetris-mode tla-annotate-mode tla-archive-list-mode tla-bconfig-mode tla-bookmarks-mode tla-branch-list-mode tla-browse-mode tla-category-list-mode tla-changelog-mode tla-follow-symlinks-mode tla-inventory-file-mode tla-inventory-mode tla-lint-mode tla-logs-mode tla-revision-list-mode tla-revlog-mode tla-tree-lint-mode tla-version-list-mode twittering-mode urlview-mode vc-annotate-mode vc-dir-mode vc-git-log-view-mode vc-hg-log-view-mode vc-svn-log-view-mode vm-mode vm-summary-mode w3m-mode wab-compilation-mode xgit-annotate-mode xgit-changelog-mode xgit-diff-mode xgit-revlog-mode xhg-annotate-mode xhg-log-mode xhg-mode xhg-mq-mode xhg-mq-sub-mode xhg-status-extra-mode)))
+    (archive-mode bbdb-mode biblio-selection-mode bookmark-bmenu-mode bookmark-edit-annotation-mode browse-kill-ring-mode bzr-annotate-mode calc-mode cfw:calendar-mode completion-list-mode Custom-mode debugger-mode delicious-search-mode desktop-menu-blist-mode desktop-menu-mode dvc-bookmarks-mode dvc-diff-mode dvc-info-buffer-mode dvc-log-buffer-mode dvc-revlist-mode dvc-revlog-mode dvc-status-mode dvc-tips-mode ediff-meta-mode efs-mode Electric-buffer-menu-mode emms-browser-mode emms-mark-mode emms-metaplaylist-mode emms-playlist-mode ess-help-mode etags-select-mode fj-mode gc-issues-mode gdb-breakpoints-mode gdb-disassembly-mode gdb-frames-mode gdb-locals-mode gdb-memory-mode gdb-registers-mode gdb-threads-mode gist-list-mode gnus-article-mode gnus-browse-mode gnus-group-mode gnus-server-mode gnus-summary-mode google-maps-static-mode jde-javadoc-checker-report-mode magit-popup-mode magit-popup-sequence-mode magit-branch-manager-mode magit-commit-mode magit-key-mode magit-rebase-mode magit-wazzup-mode mh-folder-mode monky-mode mu4e-main-mode mu4e-headers-mode mu4e-view-mode notmuch-hello-mode notmuch-search-mode notmuch-show-mode occur-mode pdf-outline-buffer-mode pdf-view-mode proced-mode rcirc-mode rebase-mode recentf-dialog-mode reftex-select-bib-mode reftex-select-label-mode reftex-toc-mode sldb-mode slime-inspector-mode slime-thread-control-mode slime-xref-mode sr-buttons-mode sr-mode sr-tree-mode sr-virtual-mode tar-mode tetris-mode tla-annotate-mode tla-archive-list-mode tla-bconfig-mode tla-bookmarks-mode tla-branch-list-mode tla-browse-mode tla-category-list-mode tla-changelog-mode tla-follow-symlinks-mode tla-inventory-file-mode tla-inventory-mode tla-lint-mode tla-logs-mode tla-revision-list-mode tla-revlog-mode tla-tree-lint-mode tla-version-list-mode twittering-mode urlview-mode vc-annotate-mode vc-dir-mode vc-git-log-view-mode vc-hg-log-view-mode vc-svn-log-view-mode vm-mode vm-summary-mode w3m-mode wab-compilation-mode xgit-annotate-mode xgit-changelog-mode xgit-diff-mode xgit-revlog-mode xhg-annotate-mode xhg-log-mode xhg-mode xhg-mq-mode xhg-mq-sub-mode xhg-status-extra-mode)))
  '(evil-want-Y-yank-to-eol t)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2) (t . t))))
  '(global-hl-line-mode nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
+ '(helm-swoop-split-direction (quote split-window-horizontally))
+ '(helm-swoop-split-with-multiple-windows nil)
+ '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
+ '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
  '(next-error-recenter (quote (4)))
- '(org-agenda-files (quote ("~/org/" "~/org/personal_org")))
+ '(org-agenda-files
+   (quote
+    ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
  '(org-id-locations-file "~/org/personal_org/.org-id-locations")
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-log-state-notes-insert-after-drawers t)
- '(org-refile-allow-creating-parent-nodes (quote confirm))
+ '(org-outline-path-complete-in-steps nil)
+ '(org-refile-allow-creating-parent-nodes nil)
+ '(org-refile-targets (quote ((org-agenda-files :maxlevel . 10))))
  '(org-refile-use-outline-path (quote file))
  '(org-return-follows-link t)
  '(paradox-automatically-star nil)
  '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
+ '(projectile-generic-command "find -L . -type f -print0")
  '(rtags-use-helm t)
+ '(split-height-threshold 80)
+ '(split-width-threshold 160)
  '(term-buffer-maximum-size 100)
  '(truncate-lines t)
  '(undo-tree-auto-save-history t)
