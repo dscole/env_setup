@@ -515,7 +515,6 @@ you should place your code here."
                          workspace-number
                          window-number)
                         :fallback evil-state
-                        :separator "|"
                         :face highlight-face)
                        (point-position line-column)
                        (buffer-modified buffer-size buffer-id remote-host)
@@ -716,6 +715,16 @@ you should place your code here."
               )
             )
   ;;;;;   --------------------- rtags (END) ------------------------------ ;;;;
+
+  ;;;;;   --------------------- C++ - rtags (START) ------------------------------ ;;;;
+
+  (defun my-dedicate-window ()
+    (interactive)
+    (set-window-dedicated-p (selected-window) t)
+    (set-frame-parameter nil 'unsplittable t)
+    )
+  ;;;;;   --------------------- C++ - rtags (END) ------------------------------ ;;;;
+
 
   ;;;;;   --------------------- org-mode (START) ------------------------------ ;;;;
 
