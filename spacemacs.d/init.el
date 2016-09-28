@@ -332,6 +332,12 @@ you should place your code here."
   (spacemacs/set-leader-keys "[" 'previous-multiframe-window)
   (spacemacs/set-leader-keys "]" 'next-multiframe-window)
   (spacemacs/set-leader-keys "ww" 'ace-window)
+  (spacemacs/set-leader-keys "bb" 'helm-buffers-list)
+  (spacemacs/set-leader-keys "bB" 'helm-mini)
+  (spacemacs/set-leader-keys "ij" 'spacemacs/insert-line-below-no-indent)
+  (spacemacs/set-leader-keys "ik" 'spacemacs/insert-line-above-no-indent)
+  (spacemacs/set-leader-keys "iJ" 'evil-insert-newline-below)
+  (spacemacs/set-leader-keys "iK" 'evil-insert-newline-above)
   ;;------------------ Set custom keybindings (END) -----------------------;;
 
   ;;;;; --------------------- Custom Functions (START) ---------------------;;;;
