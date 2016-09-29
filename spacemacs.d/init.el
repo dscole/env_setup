@@ -353,10 +353,6 @@ you should place your code here."
     (call-process-shell-command (format "sync-to-skae.sh %s &" buffer-file-name) nil nil 0)
     )
 
-  ;; (defun sync-to-skae ()
-  ;;   "Sync files from /spare/local/dcole/dev to norcompile5.skae"
-  ;;   (save-window-excursion (async-shell-command (format "sync-to-skae.sh %s" buffer-file-name) nil nil)))
-
   (when (string= system-name "dcolelinux.ny.tower-research.com")
     (add-hook 'after-save-hook #'sync-to-skae)
     (add-hook 'after-revert-hook #'sync-to-skae)
@@ -713,6 +709,8 @@ you should place your code here."
               (local-set-key  (kbd "<C-left>")  'rtags-previous-match)
               (local-set-key  (kbd "<C-up>")    'rtags-location-stack-back)
               (local-set-key  (kbd "<C-down>")  'rtags-location-stack-forward)
+              (local-set-key  (kbd "M-n") 'rtags-next-match)
+              (local-set-key  (kbd "M-p") 'rtags-previous-match)
               (global-set-key (kbd "C-c C-n") 'flycheck-next-error)
               (global-set-key (kbd "C-c C-p") 'flycheck-previous-error)
               (local-set-key  (kbd "C-c C-n") 'flycheck-next-error)
@@ -720,6 +718,35 @@ you should place your code here."
               (remove-hook 'kill-buffer-hook 'rtags-kill-buffer-hook)
               )
             )
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "r." 'rtags-find-symbol-at-point)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "." 'rtags-find-symbol-at-point)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "," 'rtags-find-references-at-point)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "p" 'rtags-location-stack-back)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "n" 'rtags-location-stack-forward)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "m" 'helm-imenu)
+
+  (spacemacs/declare-prefix-for-mode 'c++-mode "r" "rtags")
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rs" 'rtags-find-symbol)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rr" 'rtags-find-references)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rc" 'rtags-print-class-hierarchy)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rv" 'rtags-find-virtuals-at-point)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ri" 'rtags-include-file)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rI" 'rtags-get-include-file-for-symbol)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rn" 'rtags-rename-symbol)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "re" 'rtags-print-enum-value-at-point)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rh" 'rtags-print-symbol-info)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rt" 'rtags-symbol-type)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ry" 'rtags-copy-and-print-current-location)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rd" 'rtags-print-dependencies)
+
+  (spacemacs/declare-prefix-for-mode 'c++-mode "h" "help")
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "hh" 'ycmd-show-documentation)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ht" 'ycmd-get-type)
+
+  (spacemacs/declare-prefix-for-mode 'c++-mode "y" "ycmd")
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "yh" 'ycmd-show-documentation)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "yt" 'ycmd-get-type)
+
   ;;;;;   --------------------- rtags (END) ------------------------------ ;;;;
 
   ;;;;;   --------------------- C++ - rtags (START) ------------------------------ ;;;;
