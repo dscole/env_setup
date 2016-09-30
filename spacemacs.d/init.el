@@ -338,6 +338,9 @@ you should place your code here."
   (spacemacs/set-leader-keys "ik" 'spacemacs/insert-line-above-no-indent)
   (spacemacs/set-leader-keys "iJ" 'evil-insert-newline-below)
   (spacemacs/set-leader-keys "iK" 'evil-insert-newline-above)
+  ;; new Magit bindings
+  (spacemacs/set-leader-keys "gL" 'magit-log-buffer-file-popup)
+  (spacemacs/set-leader-keys "gl" 'magit-log-buffer-file)
   ;;------------------ Set custom keybindings (END) -----------------------;;
 
   ;;;;; --------------------- Custom Functions (START) ---------------------;;;;
@@ -747,16 +750,38 @@ you should place your code here."
   (spacemacs/set-leader-keys-for-major-mode 'c++-mode "yh" 'ycmd-show-documentation)
   (spacemacs/set-leader-keys-for-major-mode 'c++-mode "yt" 'ycmd-get-type)
 
+  (spacemacs/declare-prefix-for-mode 'c++-mode "d" "debugging")
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "db" 'gud-break)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dn" 'gud-step)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "di" 'gud-stepi)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dc" 'gud-cont)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "df" 'gud-finish)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "d>" 'gud-down)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "d<" 'gud-up)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "du" 'gud-until)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dg" 'gud-go)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dn" 'gud-next)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dj" 'gud-jump)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dp" 'gud-print)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dd" 'gud-remove)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "de" 'gud-refresh)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dr" 'gud-run)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ds" 'gud-symbol)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dt" 'gud-tbreak)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dv" 'gud-val)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dw" 'gud-watch)
+
+  (spacemacs/declare-prefix-for-mode 'c++-mode "e" "place_holder")
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ee" 'smartparens-mode)
   ;;;;;   --------------------- rtags (END) ------------------------------ ;;;;
 
-  ;;;;;   --------------------- C++ - rtags (START) ------------------------------ ;;;;
+  ;;;;;   --------------------- C++ - rtags (END) ------------------------------ ;;;;
 
   (defun my-dedicate-window ()
     (interactive)
     (set-window-dedicated-p (selected-window) t)
     (set-frame-parameter nil 'unsplittable t)
     )
-  ;;;;;   --------------------- C++ - rtags (END) ------------------------------ ;;;;
 
 
   ;;;;;   --------------------- org-mode (START) ------------------------------ ;;;;
@@ -768,6 +793,7 @@ you should place your code here."
 do not already have one."
     (interactive)
     (org-map-entries 'org-id-get-create)
+    (org-cycle-hide-drawers 'all)       ; hide PROPERTIES if it was added
     )
 
   (defun my/copy-id-to-clipboard()
