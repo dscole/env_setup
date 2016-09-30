@@ -727,6 +727,8 @@ you should place your code here."
   (spacemacs/set-leader-keys-for-major-mode 'c++-mode "p" 'rtags-location-stack-back)
   (spacemacs/set-leader-keys-for-major-mode 'c++-mode "n" 'rtags-location-stack-forward)
   (spacemacs/set-leader-keys-for-major-mode 'c++-mode "m" 'helm-imenu)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "SPC" 'gud-break)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "TAB" 'clang-format-buffer)
 
   (spacemacs/declare-prefix-for-mode 'c++-mode "r" "rtags")
   (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rs" 'rtags-find-symbol)
