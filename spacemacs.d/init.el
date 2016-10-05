@@ -302,32 +302,6 @@ you should place your code here."
   (windmove-default-keybindings)
 
   ;;------------------ Set custom keybindings (START) -----------------------;;
-  (global-set-key (kbd "C-o") 'next-multiframe-window)
-  (global-set-key (kbd "C-c RET") 'browse-url-at-point)
-
-  ;; (add-hook 'Buffer-menu-mode-hook
-  ;;           (function (lambda ()
-  ;;                       (local-unset-key (kbd "C-o")))))
-
-  (add-hook 'dired-mode-hook
-            (function (lambda ()
-                        (local-unset-key (kbd "C-o"))
-                        (local-set-key (kbd "o") 'dired-display-file)
-                        )
-                      )
-            )
-
-  (add-hook 'compilation-mode-hook
-            (function (lambda ()
-                        (local-unset-key (kbd "C-o"))
-                        (local-set-key (kbd "o") 'compilation-display-error)
-                        )
-                      )
-            )
-
-  (add-hook 'c-mode-common-hook
-            (lambda()
-              (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
 
   (spacemacs/set-leader-keys "[" 'previous-multiframe-window)
   (spacemacs/set-leader-keys "]" 'next-multiframe-window)
@@ -484,7 +458,6 @@ you should place your code here."
                 )
               )
     )
-  (evil-set-initial-state 'magit-mode 'emacs)
 
 
   (spacemacs/toggle-truncate-lines-on)
