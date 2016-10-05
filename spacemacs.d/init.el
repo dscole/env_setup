@@ -53,6 +53,10 @@ values."
      syntax-checking
      ycmd
      no-dots
+     ;; evil-snipe  -- didn't quite install properly for me (had some errors)
+     ;; (evil-snipe :variables
+     ;;             evil-snipe-enable-alternate-f-and-t-behaviors t)
+     ;; )
      ;; better-defaults
      ;; (shell :variables
      ;;        shell-default-height 30
@@ -315,6 +319,7 @@ you should place your code here."
   ;; new Magit bindings
   (spacemacs/set-leader-keys "gL" 'magit-log-buffer-file-popup)
   (spacemacs/set-leader-keys "gl" 'magit-log-buffer-file)
+
   ;;------------------ Set custom keybindings (END) -----------------------;;
 
   ;;;;; --------------------- Custom Functions (START) ---------------------;;;;
@@ -683,6 +688,20 @@ buffer."
                        (global :when active)
                        (new-version :when active)
                        buffer-position hud))
+
+  ;; avy setup
+
+  (define-key evil-normal-state-map "s" 'avy-goto-char-2)
+  (define-key evil-motion-state-map "s" 'avy-goto-char-2)
+
+  (evil-define-key 'operator evil-surround-mode-map "s" 'avy-goto-char-2)
+  (evil-define-key 'operator evil-surround-mode-map "S" 'evil-surround-edit)
+
+  (evil-define-key 'visual evil-surround-mode-map "s" 'avy-goto-char-2)
+  (evil-define-key 'visual evil-surround-mode-map "S" 'evil-surround-region)
+
+  (evil-define-key '(normal motion visual operator) global-map (kbd "C-;") 'avy-goto-line)
+
   ;;;;; --------------------- spacemacs mods (END) ---------------------;;;;
 
   ;;------------------ Set custom indentations (START) -----------------------;;
