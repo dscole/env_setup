@@ -419,6 +419,80 @@ you should place your code here."
   (global-set-key (kbd "<f12>") 'open-jira-issue)
 
   (windmove-default-keybindings)
+
+  ;; This is an example of how to create a closure:
+  ;; (defun my-function ()
+  ;;   (message "inside my-function"))
+
+  ;; (defun create-wrapper (end_function)
+  ;;   (lexical-let ((end_function end_function))
+  ;;     (lambda ()
+  ;;       (funcall end_function))))
+
+  ;; (setq new-wrapped (create-wrapper 'my-function))
+
+  ;; (funcall new-wrapped)
+
+  ;; This is an example of how to do the same thing with eval or defmacro:
+  ;; (defun my-function ()
+  ;;   (message "inside my-function"))
+
+  ;; (defun create-wrapper (end_function)
+  ;;   (eval
+  ;;    `(defun ,(intern (format "my-%s" (symbol-name end_function))) ()
+  ;;       (,end_function)))
+  ;;   )
+
+  ;; (defmacro create-wrapper-2 (end_function)
+  ;;   `(defun ,(intern (format "my-%s" (symbol-name end_function))) ()
+  ;;      (,end_function))
+  ;;   )
+
+  ;; (setq new-wrapped (create-wrapper-2 my-function))
+
+  ;; (funcall new-wrapped)
+
+  (defmacro create-helm-ff-wrapper-3 (end_function)
+    "This defines a new function for use with helm-ff
+It takes a function that takes a single argument - a directory, and defines a new function
+my-<end_function name> that can then be used to bind to keys in helm-find-files-map"
+    (eval `(defun ,(intern (format "wrapped-%s" (symbol-name end_function))) ()
+             (interactive)
+             (with-helm-alive-p
+               (helm-exit-and-execute-action (lambda(_candidate)
+                                               (,end_function _candidate))))))
+    )
+
+  (defun create-helm-ff-wrapper-2 (end_function)
+    "This defines a new function for use with helm-ff
+It takes a function that takes a single argument - a directory, and defines a new function
+my-<end_function name> that can then be used to bind to keys in helm-find-files-map"
+    (eval `(defun ,(intern (format "wrapped-%s" (symbol-name end_function))) ()
+             (interactive)
+             (with-helm-alive-p
+               (helm-exit-and-execute-action (lambda(_candidate)
+                                               (,end_function _candidate))))))
+    )
+
+
+
+  (defun create-helm-ff-wrapper (end_function)
+    "this creates a closure for use with helm-ff
+it takes a function that takes a single argument - a directory. the closure can then be used
+to bind to keys in helm-find-files-map"
+    (lexical-let ((end_function end_function))
+      (lambda ()
+        (interactive)
+        (with-helm-alive-p
+          (helm-exit-and-execute-action (lambda(_candidate)
+                                          (funcall end_function _candidate)))))
+      )
+    )
+
+  ;; Make helm's "smart search" version of ag run on M-g a inside helm-find-files
+  (define-key helm-find-files-map (kbd "M-g a") (create-helm-ff-wrapper-2 'spacemacs/helm-files-do-ag))
+
+
   ;;;;; --------------------- Custom Functions (END) ---------------------;;;;
 
   ;;;;; --------------------- spacemacs mods (START) ---------------------;;;;
@@ -443,6 +517,7 @@ you should place your code here."
     (setq ycmd-idle-change-delay 1.0)
     )
 
+  ;; Magit setup
   (with-eval-after-load 'magit
     (dolist (inserter '(magit-insert-modules-unpulled-from-upstream
                         magit-insert-modules-unpulled-from-pushremote
@@ -459,6 +534,98 @@ you should place your code here."
               )
     )
 
+  ;;
+  ;; Define magit-log funcs for current directory
+  (defun my-magit-log-buffer-file (&optional follow beg end)
+    "Show log for the blob or file visited in the current buffer.
+With a prefix argument or when `--follow' is part of
+`magit-log-arguments', then follow renames."
+    (interactive (if (region-active-p)
+                     (list current-prefix-arg
+                           (1- (line-number-at-pos (region-beginning)))
+                           (1- (line-number-at-pos (region-end))))
+                   (list current-prefix-arg)))
+    (require 'magit)
+    (-if-let (file (or (magit-file-relative-name)
+                       (magit-file-relative-name default-directory)))
+        (magit-mode-setup-internal
+         #'magit-log-mode
+         (list (list (or magit-buffer-refname
+                         (magit-get-current-branch)
+                         "HEAD"))
+               (let ((args (car (magit-log-arguments))))
+                 (when (and follow (not (member "--follow" args)))
+                   (push "--follow" args))
+                 (when (and beg end)
+                   (setq args (cons (format "-L%s,%s:%s" beg end file)
+                                    (cl-delete "-L" args :test
+                                               'string-prefix-p)))
+                   (setq file nil))
+                 args)
+               (and file (list file)))
+         magit-log-buffer-file-locked)
+      (user-error "Buffer isn't visiting a file"))
+    (magit-log-goto-same-commit))
+
+  (defun my-magit-dir-log (directory)
+    "Show the status of the current Git repository in a buffer.
+With a prefix argument prompt for a repository to be shown.
+With two prefix arguments prompt for an arbitrary directory.
+If that directory isn't the root of an existing repository
+then offer to initialize it as a new repository."
+    (let* ((default-directory directory)
+           (magit--default-directory directory)
+           (file (magit-file-relative-name directory)))
+        (magit-mode-setup-internal
+         #'magit-log-mode
+         (list (list (or magit-buffer-refname
+                         (magit-get-current-branch)
+                         "HEAD"))
+               (let ((args (car (magit-log-arguments))))
+                 (push "--follow" args)
+                 args)
+               (and file (list file)))
+         magit-log-buffer-file-locked))
+    (magit-log-goto-same-commit))
+
+  (defun my-magit-log-buffer-file-popup ()
+    "Popup console for log commands.
+
+This is a variant of `magit-log-popup' which shows the same popup
+but which limits the log to the file being visited in the current
+buffer."
+    (interactive)
+    (-if-let (file (or (magit-file-relative-name)
+                       (magit-file-relative-name default-directory)))
+        (let ((magit-log-arguments
+               (magit-popup-import-file-args
+                (-if-let (buffer (magit-mode-get-buffer 'magit-log-mode))
+                    (with-current-buffer buffer
+                      (nth 2 magit-refresh-args))
+                  (default-value 'magit-log-arguments))
+                (list file))))
+          (magit-invoke-popup 'magit-log-popup nil nil))
+      (user-error "Buffer isn't visiting a file"))
+    )
+
+  (defun my-magit-dir-log-popup (directory)
+    (message "this is the directory:")
+    (prin1 directory)
+    (let* ((default-directory directory)
+           (magit--default-directory directory)
+           (file (magit-file-relative-name directory))
+           (magit-log-arguments (magit-popup-import-file-args
+                                 (default-value 'magit-log-arguments)
+                                 (list file))))
+      (magit-status-internal default-directory)
+      (magit-invoke-popup 'magit-log-popup nil nil)
+      )
+    )
+
+  (define-key helm-find-files-map (kbd "M-g g") (create-helm-ff-wrapper-2 'my-magit-dir-log))
+  (define-key helm-find-files-map (kbd "M-g G") (create-helm-ff-wrapper-2 'my-magit-dir-log-popup))
+
+  ;; Magit setup
 
   (spacemacs/toggle-truncate-lines-on)
   ;; Projectile
@@ -964,6 +1131,7 @@ text and copying to the killring."
  '(helm-swoop-split-with-multiple-windows nil)
  '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
+ '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
  '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
  '(next-error-recenter (quote (4)))
  '(org-agenda-files
