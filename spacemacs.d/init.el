@@ -461,11 +461,11 @@ you should place your code here."
     "This defines a new function for use with helm-ff
 It takes a function that takes a single argument - a directory, and defines a new function
 my-<end_function name> that can then be used to bind to keys in helm-find-files-map"
-    (eval `(defun ,(intern (format "wrapped-%s" (symbol-name end_function))) ()
-             (interactive)
-             (with-helm-alive-p
-               (helm-exit-and-execute-action (lambda(_candidate)
-                                               (,end_function _candidate))))))
+    `(defun ,(intern (format "wrapped-%s" (symbol-name end_function))) ()
+       (interactive)
+       (with-helm-alive-p
+         (helm-exit-and-execute-action (lambda(_candidate)
+                                         (,end_function _candidate)))))
     )
 
   (defun create-helm-ff-wrapper-2 (end_function)
@@ -494,8 +494,11 @@ to bind to keys in helm-find-files-map"
       )
     )
 
+  (defun my-do-ag (path)
+    (helm-do-ag (file-name-directory path)))
+
   ;; Make helm's "smart search" version of ag run on M-g a inside helm-find-files
-  (define-key helm-find-files-map (kbd "M-g a") (create-helm-ff-wrapper-2 'spacemacs/helm-files-do-ag))
+  (define-key helm-find-files-map (kbd "M-g a") (create-helm-ff-wrapper-2 'my-do-ag))
 
 
   ;;;;; --------------------- Custom Functions (END) ---------------------;;;;
