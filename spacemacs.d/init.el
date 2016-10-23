@@ -57,6 +57,7 @@ values."
      syntax-checking
      ycmd
      no-dots
+     ipython-notebook
      ;; evil-snipe  -- didn't quite install properly for me (had some errors)
      ;; (evil-snipe :variables
      ;;             evil-snipe-enable-alternate-f-and-t-behaviors t)
@@ -77,7 +78,10 @@ values."
                                       json-mode
                                       json-reformat
                                       json-snatcher
-                                      py-autopep8)
+                                      py-autopep8
+                                      magit-gerrit
+                                      jedi
+                                      rainbow-mode)
    ;; A list of packages that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; Defines the behaviour of Spacemacs when downloading packages.
@@ -544,6 +548,7 @@ to bind to keys in helm-find-files-map"
                 (local-set-key  (kbd "C-c p") 'magit-push-implicitly)
                 )
               )
+    (define-key magit-mode-map (kbd "C") 'magit-gerrit-popup)
     )
 
   ;;
@@ -636,6 +641,12 @@ buffer."
 
   (define-key helm-find-files-map (kbd "M-g g") (create-helm-ff-wrapper-2 'my-magit-dir-log))
   (define-key helm-find-files-map (kbd "M-g G") (create-helm-ff-wrapper-2 'my-magit-dir-log-popup))
+  ;; if remote url is not using the default gerrit port and
+  ;; ssh scheme, need to manually set this variable
+  (setq-default magit-gerrit-ssh-creds "dcole@norgerrit.tower-research.com:29418")
+
+  ;; if necessary, use an alternative remote instead of 'origin'
+  (setq-default magit-gerrit-remote "origin")
 
   ;; Magit setup
 
@@ -952,6 +963,31 @@ buffer."
     )
 
 
+  ;;;;;   --------------------- python (START) ------------------------------ ;;;;
+  (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
+  ;; for some reason the following breaks the notebook setup
+  ;; (spacemacs|enable-auto-complete ein:notebook-multilang-mode)
+  (add-hook 'ein:notebook-multilang-mode-hook
+            (lambda ()
+              (auto-complete-mode)
+              (define-key ac-mode-map (kbd "C-c h") 'ac-last-quick-help)
+              (define-key ac-mode-map (kbd "C-c H") 'ac-last-help)
+              (define-key ac-menu-map "\c-n" 'ac-next)
+              (define-key ac-menu-map "\c-p" 'ac-previous)
+             ))
+
+  (spacemacs/declare-prefix-for-mode 'ein:notebook-multilang-mode "g" "find-symbol")
+  (spacemacs/set-leader-keys-for-major-mode 'ein:notebook-multilang-mode
+    "gg" 'ein:pytools-jump-to-source-command
+    "?" 'ein:pytools-request-tooltip-or-help)
+
+  (evil-define-key 'normal ein:notebook-multilang-mode-map
+    ;; keybindings mirror ipython web interface behavior
+    (kbd "C-j") 'ein:worksheet-goto-next-input
+    (kbd "C-k") 'ein:worksheet-goto-prev-input)
+
+  ;;;;;   --------------------- python (END) ------------------------------ ;;;;
+
   ;;;;;   --------------------- org-mode (START) ------------------------------ ;;;;
 
   ;; Taken from [http://koenig-haunstetten.de/2016/07/09/code-snippet-for-orgmode-e05s02/]
@@ -1137,20 +1173,20 @@ text and copying to the killring."
     ("5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
  '(custom-theme-load-path
    (quote
-    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)))
+    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)) t)
  '(desktop-save-mode t)
  '(display-time-mode t)
+ '(ein:use-auto-complete t)
+ '(ein:use-auto-complete-superpack t)
  '(electric-indent-mode nil)
  '(eshell-scroll-show-maximum-output nil)
- '(evil-emacs-state-modes
-   (quote
-    (archive-mode bbdb-mode biblio-selection-mode bookmark-bmenu-mode bookmark-edit-annotation-mode browse-kill-ring-mode bzr-annotate-mode calc-mode cfw:calendar-mode completion-list-mode Custom-mode debugger-mode delicious-search-mode desktop-menu-blist-mode desktop-menu-mode dvc-bookmarks-mode dvc-diff-mode dvc-info-buffer-mode dvc-log-buffer-mode dvc-revlist-mode dvc-revlog-mode dvc-status-mode dvc-tips-mode ediff-meta-mode efs-mode Electric-buffer-menu-mode emms-browser-mode emms-mark-mode emms-metaplaylist-mode emms-playlist-mode ess-help-mode etags-select-mode fj-mode gc-issues-mode gdb-breakpoints-mode gdb-disassembly-mode gdb-frames-mode gdb-locals-mode gdb-memory-mode gdb-registers-mode gdb-threads-mode gist-list-mode gnus-article-mode gnus-browse-mode gnus-group-mode gnus-server-mode gnus-summary-mode google-maps-static-mode jde-javadoc-checker-report-mode magit-popup-mode magit-popup-sequence-mode magit-branch-manager-mode magit-commit-mode magit-key-mode magit-rebase-mode magit-wazzup-mode mh-folder-mode monky-mode mu4e-main-mode mu4e-headers-mode mu4e-view-mode notmuch-hello-mode notmuch-search-mode notmuch-show-mode occur-mode pdf-outline-buffer-mode pdf-view-mode proced-mode rcirc-mode rebase-mode recentf-dialog-mode reftex-select-bib-mode reftex-select-label-mode reftex-toc-mode sldb-mode slime-inspector-mode slime-thread-control-mode slime-xref-mode sr-buttons-mode sr-mode sr-tree-mode sr-virtual-mode tetris-mode tla-annotate-mode tla-archive-list-mode tla-bconfig-mode tla-bookmarks-mode tla-branch-list-mode tla-browse-mode tla-category-list-mode tla-changelog-mode tla-follow-symlinks-mode tla-inventory-file-mode tla-inventory-mode tla-lint-mode tla-logs-mode tla-revision-list-mode tla-revlog-mode tla-tree-lint-mode tla-version-list-mode twittering-mode urlview-mode vc-annotate-mode vc-dir-mode vc-git-log-view-mode vc-hg-log-view-mode vc-svn-log-view-mode vm-mode vm-summary-mode w3m-mode wab-compilation-mode xgit-annotate-mode xgit-changelog-mode xgit-diff-mode xgit-revlog-mode xhg-annotate-mode xhg-log-mode xhg-mode xhg-mq-mode xhg-mq-sub-mode xhg-status-extra-mode)))
  '(evil-want-Y-yank-to-eol t)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2) (t . t))))
  '(global-hl-line-mode nil)
+ '(global-whitespace-mode nil)
  '(helm-boring-file-regexp-list
    (quote
-    ("\\.o$" "~$" "\\.bin$" "\\.lbin$" "\\.so$" "\\.a$" "\\.ln$" "\\.blg$" "\\.bbl$" "\\.elc$" "\\.lof$" "\\.glo$" "\\.idx$" "\\.lot$" "\\.svn$" "\\.hg$" "\\.git$" "\\.bzr$" "CVS$" "_darcs$" "_MTN$" "\\.fmt$" "\\.tfm$" "\\.class$" "\\.fas$" "\\.lib$" "\\.mem$" "\\.x86f$" "\\.sparcf$" "\\.dfsl$" "\\.pfsl$" "\\.d64fsl$" "\\.p64fsl$" "\\.lx64fsl$" "\\.lx32fsl$" "\\.dx64fsl$" "\\.dx32fsl$" "\\.fx64fsl$" "\\.fx32fsl$" "\\.sx64fsl$" "\\.sx32fsl$" "\\.wx64fsl$" "\\.wx32fsl$" "\\.fasl$" "\\.ufsl$" "\\.fsl$" "\\.dxl$" "\\.lo$" "\\.la$" "\\.gmo$" "\\.mo$" "\\.toc$" "\\.aux$" "\\.cp$" "\\.fn$" "\\.ky$" "\\.pg$" "\\.tp$" "\\.vr$" "\\.cps$" "\\.fns$" "\\.kys$" "\\.pgs$" "\\.tps$" "\\.vrs$" "\\.pyc$" "\\.pyo$" "\\.#")))
+    ("\\.o$" "~$" "\\.bin$" "\\.lbin$" "\\.so$" "\\.a$" "\\.ln$" "\\.elc$" "\\.pyc$" "\\.#")))
  '(helm-buffer-max-length nil)
  '(helm-ff-skip-boring-files t)
  '(helm-ff-tramp-not-fancy nil)
@@ -1166,7 +1202,7 @@ text and copying to the killring."
  '(org-agenda-files
    (quote
     ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
- '(org-id-locations-file "~/org/personal_org/.org-id-locations")
+ '(org-id-locations-file "~/org/personal_org/.org-id-locations" t)
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-log-state-notes-insert-after-drawers t)
@@ -1183,7 +1219,13 @@ text and copying to the killring."
  '(split-width-threshold 160)
  '(term-buffer-maximum-size 100)
  '(truncate-lines t)
- '(undo-tree-auto-save-history t)
+ '(undo-tree-auto-save-history nil)
+ '(whitespace-action nil)
+ '(whitespace-display-mappings (quote ((tab-mark 9 [187 9] [92 9]))))
+ '(whitespace-line-column 200)
+ '(whitespace-style
+   (quote
+    (face tabs trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark)))
  '(ycmd-extra-conf-whitelist (quote ("/spare/local/dcole/dev/*")))
  '(ycmd-server-command
    (quote
