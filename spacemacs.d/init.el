@@ -38,7 +38,11 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     auto-completion
+     (auto-completion :variables
+                      auto-completion-enable-help-tooltip t
+                      auto-completion-enable-sort-by-usage t
+                      auto-completion-enable-snippets-in-popup t
+                      )
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode)
 
@@ -1118,6 +1122,9 @@ text and copying to the killring."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ac-auto-show-menu t)
+ '(ac-quick-help-delay 0)
+ '(ac-use-menu-map t)
  '(avy-all-windows nil)
  '(browse-url-browser-function (quote browse-url-chromium))
  '(browse-url-chromium-arguments
