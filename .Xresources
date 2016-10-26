@@ -254,7 +254,7 @@ URxvt*vt100.modifyOtherKeys: 1
 
 ! This is from arankine, supposedly he can make it work and show all of these
 ! glyphs with no issues:
-!  ⑧ ⓐ ⓒ ⓔ Ⓔe Ⓔh ⓕ Ⓕ ⓗi Ⓚ Ⓢ ⓨ
+!  ⑧ ⓐ ⓒ ⓔ Ⓔ ⓕ Ⓕ ⓗ Ⓚ Ⓢ ⓨ 
 ! ! Emacs.font:              Source Code Pro-10
 
 ! ! URxvt*font:              xft:Source Code Pro:size=10
@@ -265,7 +265,6 @@ URxvt*vt100.modifyOtherKeys: 1
 ! ! URxvt.foreground:        white
 ! ! URxvt.secondaryScreen:   1
 ! ! URxvt.secondaryScroll:   0
-
 ! ! ! Fonts {{{
 ! ! Xft.antialias: true
 ! ! Xft.hinting:   true

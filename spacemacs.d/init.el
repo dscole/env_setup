@@ -81,7 +81,9 @@ values."
                                       py-autopep8
                                       magit-gerrit
                                       jedi
-                                      rainbow-mode)
+                                      rainbow-mode
+                                      unicode-fonts
+                                      )
    ;; A list of packages that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; Defines the behaviour of Spacemacs when downloading packages.
@@ -260,7 +262,7 @@ values."
    dotspacemacs-line-numbers nil
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
-   dotspacemacs-folding-method 'evil
+   dotspacemacs-folding-method 'origami
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
@@ -325,9 +327,11 @@ you should place your code here."
   (spacemacs/set-leader-keys "iJ" 'evil-insert-newline-below)
   (spacemacs/set-leader-keys "iK" 'evil-insert-newline-above)
   ;; new Magit bindings
-  (spacemacs/set-leader-keys "gL" 'magit-log-buffer-file-popup)
-  (spacemacs/set-leader-keys "gl" 'magit-log-buffer-file)
+  (spacemacs/set-leader-keys "glL" 'magit-log-buffer-file-popup)
+  (spacemacs/set-leader-keys "gll" 'magit-log-buffer-file)
 
+  ;; Set fonts
+  (unicode-fonts-setup)
   ;;------------------ Set custom keybindings (END) -----------------------;;
 
   ;;;;; --------------------- Custom Functions (START) ---------------------;;;;
@@ -861,22 +865,20 @@ buffer."
     "Version control information."
     (when vc-mode
       (powerline-raw
-       (replace-regexp-in-string "Git" ""
+       (replace-regexp-in-string "Git" ""
                                  (s-trim (concat vc-mode
                                                  (when (buffer-file-name)
                                                    (pcase (vc-state (buffer-file-name))
-                                                     (`up-to-date " ")
+                                                     (`up-to-date "")
                                                      (`edited "*")
-                                                     (`added " Add")
-                                                     (`unregistered " ??")
-                                                     (`removed " Del")
-                                                     (`needs-merge " Con")
+                                                     (`added "+")
+                                                     (`unregistered "??")
+                                                     (`removed "-")
+                                                     (`needs-merge "!")
                                                      (`needs-update " Upd")
                                                      (`ignored " Ign")
-                                                     (_ " Unk")))))
-                                 )
-
-       )))
+                                                     (_ "?")))))
+       ))))
 
   (spaceline-compile 'dcole-ml
                      '(((persp-name
@@ -906,6 +908,10 @@ buffer."
                        (global :when active)
                        (new-version :when active)
                        buffer-position hud))
+  (setq mode-line-format '("%e" (:eval (spaceline-ml-dcole-ml))))
+  (force-mode-line-update t)
+
+
 
   ;; avy setup
 
@@ -1359,7 +1365,7 @@ text and copying to the killring."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
- '(ac-quick-help-delay 0)
+ '(ac-quick-help-delay 0 t)
  '(ac-use-menu-map t)
  '(avy-all-windows nil)
  '(browse-url-browser-function (quote browse-url-chromium))
@@ -1373,7 +1379,7 @@ text and copying to the killring."
     ("5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
  '(custom-theme-load-path
    (quote
-    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)) t)
+    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)))
  '(desktop-save-mode t)
  '(display-time-mode t)
  '(ein:use-auto-complete t)
@@ -1383,6 +1389,7 @@ text and copying to the killring."
  '(evil-want-Y-yank-to-eol t)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2) (t . t))))
  '(global-hl-line-mode nil)
+ '(global-origami-mode t)
  '(global-whitespace-mode nil)
  '(helm-boring-file-regexp-list
    (quote
@@ -1420,6 +1427,41 @@ text and copying to the killring."
  '(term-buffer-maximum-size 100)
  '(truncate-lines t)
  '(undo-tree-auto-save-history nil)
+ '(unicode-fonts-block-font-mapping
+   (quote
+    (("Combining Diacritical Marks"
+      ("Symbola"))
+     ("Combining Diacritical Marks Extended"
+      ("Symbola"))
+     ("Combining Diacritical Marks Supplement"
+      ("Symbola"))
+     ("Combining Diacritical Marks for Symbols"
+      ("Symbola"))
+     ("Enclosed Alphanumeric Supplement"
+      ("BabelStone Han"))
+     ("Enclosed Alphanumerics"
+      ("BabelStone Han"))
+     ("Enclosed CJK Letters and Months"
+      ("BabelStone Han"))
+     ("Enclosed Ideographic Supplement"
+      ("BabelStone Han"))
+     ("Mathematical Alphanumeric Symbols"
+      ("Symbola"))
+     ("Mathematical Operators"
+      ("Symbola"))
+     ("Miscellaneous Mathematical Symbols-A"
+      ("Symbola"))
+     ("Miscellaneous Mathematical Symbols-B"
+      ("Symbola"))
+     ("Private Use Area"
+      ("FontAwesome:style=Regular"))
+     ("Supplemental Mathematical Operators"
+      ("Symbola")))))
+ '(unicode-fonts-debug-availability t)
+ '(unicode-fonts-fallback-font-list (quote ("Symbola" "Quivira")))
+ '(unicode-fonts-ignore-overrides nil)
+ '(unicode-fonts-overrides-mapping nil)
+ '(unicode-fonts-skip-fonts (quote ("STIX Math")))
  '(whitespace-action nil)
  '(whitespace-display-mappings (quote ((tab-mark 9 [187 9] [92 9]))))
  '(whitespace-line-column 200)
