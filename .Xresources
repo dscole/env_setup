@@ -7,7 +7,7 @@ xterm*utf8: 2
 XTerm*vt100.utf8: 2
 
 !!XTerm*faceName: Bitstream Vera Serif Mono
-! XTerm*faceName: Monospace:antialias=true
+XTerm*faceName: Monospace:antialias=true
 xterm*faceSize: 10
 xterm*vt100*geometry: 399x80
 xterm*saveLines: 16384
@@ -16,42 +16,11 @@ xterm*charClass: 33:48,35:48,37:48,43:48,45-47:48,64:48,95:48,126:48
 xterm*termName: xterm-256color
 xterm*eightBitInput: false
 
-! ! Exmple from https://wiki.archlinux.org/index.php/X_resources
-! ! terminal colors ------------------------------------------------------------
-
-! ! tangoesque scheme
-! *background: #111111
-! *foreground: #babdb6
-! ! Black (not tango) + DarkGrey
-! *color0:  #000000
-! *color8:  #555753
-! ! DarkRed + Red
-! *color1:  #ff6565
-! *color9:  #ff8d8d
-! ! DarkGreen + Green
-! *color2:  #93d44f
-! *color10: #c8e7a8
-! ! DarkYellow + Yellow
-! *color3:  #eab93d
-! *color11: #ffc123
-! ! DarkBlue + Blue
-! *color4:  #204a87
-! *color12: #3465a4
-! ! DarkMagenta + Magenta
-! *color5:  #ce5c00
-! *color13: #f57900
-! !DarkCyan + Cyan (both not tango)
-! *color6:  #89b6e2
-! *color14: #46a4ff
-! ! LightGrey + White
-! *color7:  #cccccc
-! *color15: #ffffff
-
 
 !My old colors:
 !BLK Cursor
 !egg-status uses color0 for Titles such as:
-!Common Key Bindings: 
+!Common Key Bindings:
 #define _color0        #606060
 !htop uses color8 for the load average and users other than me
 #define _color8        #606060
@@ -189,68 +158,6 @@ UXTerm*cursorColor    : _cursorColor
 UXTerm*ScrollBar      : false
 
 
-!! OLD from  https://wiki.mpich.org/mpich/index.php/Configure_xterm_Fonts_and_Colors_for_Your_Eyeball
-! !BLK Cursor
-! #define _color0        #000d18
-! #define _color8        #000d18
-! !RED Tag
-! #define _color1        #e89393
-! #define _color9        #e89393
-! !GRN SpecialKey
-! #define _color2        #9ece9e
-! #define _color10       #9ece9e
-! !YEL Keyword
-! #define _color3        #f0dfaf
-! #define _color11       #f0dfaf
-! !BLU Number
-! #define _color4        #8cd0d3
-! #define _color12       #8cd0d3
-! !MAG Precondit
-! #define _color5        #c0bed1
-! #define _color13       #c0bed1
-! !CYN Float
-! #define _color6        #dfaf8f
-! #define _color14       #dfaf8f
-! !WHT Search
-! #define _color7        #efefef
-! #define _color15       #efefef
-! !FMT Include, StatusLine, ErrorMsg
-! #define _colorBD       #ffcfaf
-! #define _colorUL       #ccdc90
-! #define _colorIT       #80d4aa
-! !TXT Normal, Normal, Cursor
-! #define _foreground    #dcdccc
-! #define _background    #1f1f1f
-! #define _cursorColor   #8faf9f
-
-! URxvt*color0         : _color0
-! URxvt*color1         : _color1
-! URxvt*color2         : _color2
-! URxvt*color3         : _color3
-! URxvt*color4         : _color4
-! URxvt*color5         : _color5
-! URxvt*color6         : _color6
-! URxvt*color7         : _color7
-! URxvt*color8         : _color8
-! URxvt*color9         : _color9
-! URxvt*color10        : _color10
-! URxvt*color11        : _color11
-! URxvt*color12        : _color12
-! URxvt*color13        : _color13
-! URxvt*color14        : _color14
-! URxvt*color15        : _color15
-! URxvt*colorBD        : _colorBD
-! URxvt*colorIT        : _colorIT
-! URxvt*colorUL        : _colorUL
-! URxvt*foreground     : _foreground
-! URxvt*background     : _background
-! URxvt*cursorColor    : _cursorColor
-
-
-!! config for urxvt
-URxvt*formatOtherKeys: 1
-URxvt*modifyOtherKeys: 1
-URxvt*vt100.modifyOtherKeys: 1
 
 ! This is from arankine, supposedly he can make it work and show all of these
 ! glyphs with no issues:
@@ -272,49 +179,6 @@ URxvt*vt100.modifyOtherKeys: 1
 ! ! Xft.hintstyle: hintfull
 ! ! Xft.dpi:       160
 ! ! ! }}}
-
-URxvt*utf8: 2
-URxvt*vt100.utf8: 2
-
-URxvt*bellIsUrgent: true
-URxvt.vt100.renderFont: true
-! URxvt.vt100.font:               -xos4-terminus-medium-r-normal-*-16-160-72-72-c-80-iso8859-15
-! URxvt.vt100.boldFont:           -xos4-terminus-bold-r-normal-*-16-160-72-72-c-80-iso8859-15
-! URxvt.vt100.utf8Fonts.font:     -xos4-terminus-medium-r-normal-*-16-160-72-72-c-80-iso10646-1
-! URxvt.vt100.utf8Fonts.boldFont: -xos4-terminus-bold-r-normal-*-16-160-72-72-c-80-iso10646-1
-URxvt.locale: true
-URxvt.charClass: 33:48,35:48,37:48,43:48,45-47:48,64:48,95:48,126:48,35:48
-
-
-!! This is what I really use (2016-07-11):
-!! URxvt*faceName: DejaVu Sans Mono
-
-! URxvt*faceName: "xft:Anonymous Pro for Powerline"
-!! URxvt*faceNameDoublesize: WenQuanYi Bitmap Song
-! Fix for DJVSM low-hanging underscore, adds line spacing:
-! URxvt*scaleHeight: 1.01
-
-!! URxvt*faceName: Sauce Code Powerline
-!!URxvt*font:     -adobe-source code pro-r-normal--17-120-100-100-m-0-iso10646-1
-! URxvt*faceName: Symbola
-! URxvt*faceName: Monospace:antialias=true
-! URxvt*faceName: Liberation Mono
-! URxvt*faceName: Bitstream Vera Serif Mono
-
-! URxvt*font: -*-terminus-medium-r-normal--18-*-*-*-*-*-iso10646-1
-! ! URxvt*faceName: Monospace:antialias=true
-! ! URxvt*faceName: Liberation Mono
-! ! URxvt*faceName: DejaVu Sans Mono
-! ! URxvt*faceName: Bitstream Vera Serif Mono
-! URxvt*faceName: DejaVu Sans Mono
-! URxvt*charClass: 33:48,35:48,37:48,43:48,45-47:48,64:48,95:48,126:48
-
-! URxvt*faceSize: 10
-URxvt*vt100*geometry: 399x80
-URxvt*saveLines: 16384
-URxvt.loginShell: true
-! URxvt*termName: xterm-256color
-! URxvt*eightBitInput: false
 
 URxvt*color0         : _color0
 URxvt*color1         : _color1
@@ -339,5 +203,47 @@ URxvt*foreground     : _foreground
 URxvt*background     : _background
 URxvt*cursorColor    : _cursorColor
 
+
+!! config for urxvt
+URxvt*formatOtherKeys: 1
+URxvt*modifyOtherKeys: 1
+URxvt*vt100.modifyOtherKeys: 1
+
+! This is from arankine, supposedly he can make it work and show all of these
+! glyphs with no issues:
+!  ⑧ ⓐ ⓒ ⓔ Ⓔ ⓕ Ⓕ ⓗ Ⓚ Ⓢ ⓨ
+! ! Emacs.font:              Source Code Pro-10
+
+! URxvt*font:              xft:Source Code Pro:size=10
+URxvt*font:              xft:DejaVu Sans Mono:size=10,xft:NanumGothic:size=9,xft:FreeMono:size=7
+! URxvt*font:              xft:NanumGothic:size=13
+URxvt*letterSpace:       0
+URxvt.scrollstyle:       plain
+! URxvt.background:        black
+! URxvt.foreground:        white
+URxvt.secondaryScreen:   1
+URxvt.secondaryScroll:   0
+
+! Fonts {{{
+Xft.antialias: true
+Xft.hinting:   true
+Xft.rgba:      rgb
+Xft.hintstyle: hintfull
+Xft.dpi:       100
+! }}}
+
+URxvt*utf8: 2
+URxvt*vt100.utf8: 2
+
+URxvt*bellIsUrgent: true
+URxvt.vt100.renderFont: true
+URxvt.locale: true
+
+URxvt*vt100*geometry: 399x80
+URxvt*saveLines: 16384
+URxvt.loginShell: true
+URxvt*termName: xterm-256color
+
 ! Disable scroll bar
 URxvt.scrollBar      : false
+! ⑧ ⓐ ⓒ ⓔ Ⓔ ⓕ Ⓕ ⓗ Ⓚ Ⓢ ⓨ
