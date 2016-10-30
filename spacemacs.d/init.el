@@ -903,6 +903,7 @@ buffer."
                        nyan-cat)
                      '(which-function
                        (python-pyvenv :fallback python-pyenv)
+                       purpose
                        (battery :when active)
                        selection-info input-method
                        (global :when active)
@@ -1365,9 +1366,9 @@ text and copying to the killring."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
- '(ac-quick-help-delay 0 t)
+ '(ac-quick-help-delay 0)
  '(ac-use-menu-map t)
- '(avy-all-windows nil)
+ '(avy-all-windows nil t)
  '(browse-url-browser-function (quote browse-url-chromium))
  '(browse-url-chromium-arguments
    (quote
@@ -1379,7 +1380,7 @@ text and copying to the killring."
     ("5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
  '(custom-theme-load-path
    (quote
-    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)))
+    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)) t)
  '(desktop-save-mode t)
  '(display-time-mode t)
  '(ein:use-auto-complete t)
@@ -1399,8 +1400,8 @@ text and copying to the killring."
  '(helm-ff-tramp-not-fancy nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(helm-substitute-in-filename-stay-on-remote t)
- '(helm-swoop-split-direction (quote split-window-horizontally))
- '(helm-swoop-split-with-multiple-windows nil)
+ '(helm-swoop-split-direction (quote split-window-horizontally) t)
+ '(helm-swoop-split-with-multiple-windows nil t)
  '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
  '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
@@ -1409,7 +1410,7 @@ text and copying to the killring."
  '(org-agenda-files
    (quote
     ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
- '(org-id-locations-file "~/org/personal_org/.org-id-locations" t)
+ '(org-id-locations-file "~/org/personal_org/.org-id-locations")
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-log-state-notes-insert-after-drawers t)
@@ -1418,6 +1419,9 @@ text and copying to the killring."
  '(org-refile-targets (quote ((org-agenda-files :maxlevel . 10))))
  '(org-refile-use-outline-path (quote file))
  '(org-return-follows-link t)
+ '(package-selected-packages
+   (quote
+    (yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(paradox-automatically-star nil)
  '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
  '(projectile-generic-command "find -L . -type f -print0")
