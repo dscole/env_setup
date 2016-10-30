@@ -202,7 +202,7 @@ URxvt*colorUL        : _colorUL
 URxvt*foreground     : _foreground
 URxvt*background     : _background
 URxvt*cursorColor    : _cursorColor
-
+! UXTerm*termName: xterm-256color
 
 !! config for urxvt
 URxvt*formatOtherKeys: 1
@@ -211,25 +211,23 @@ URxvt*vt100.modifyOtherKeys: 1
 
 ! This is from arankine, supposedly he can make it work and show all of these
 ! glyphs with no issues:
-!  ⑧ ⓐ ⓒ ⓔ Ⓔ ⓕ Ⓕ ⓗ Ⓚ Ⓢ ⓨ
+!  ⑧ ⓐ ⓒ ⓔ Ⓔ ⓕ Ⓕ ⓗ Ⓚ Ⓢ ⓨ  ⌚ ⌛
 ! ! Emacs.font:              Source Code Pro-10
 
-! URxvt*font:              xft:Source Code Pro:size=10
-URxvt*font:              xft:DejaVu Sans Mono:size=10,xft:NanumGothic:size=9,xft:FreeMono:size=7
-! URxvt*font:              xft:NanumGothic:size=13
-URxvt*letterSpace:       0
+URxvt*font: xft:DejaVu Sans Mono:pixelsize=13,xft:FreeSerif,xft:Symbola,xft:BabelStone Han,xft:FontAwesome,xft:Source Code Pro Medium:pixelsize=13
+URxvt*letterSpace:       -1
 URxvt.scrollstyle:       plain
-! URxvt.background:        black
-! URxvt.foreground:        white
 URxvt.secondaryScreen:   1
 URxvt.secondaryScroll:   0
 
 ! Fonts {{{
-Xft.antialias: true
-Xft.hinting:   true
-Xft.rgba:      rgb
-Xft.hintstyle: hintfull
 Xft.dpi:       100
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintslight
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
 ! }}}
 
 URxvt*utf8: 2
@@ -247,3 +245,7 @@ URxvt*termName: xterm-256color
 ! Disable scroll bar
 URxvt.scrollBar      : false
 ! ⑧ ⓐ ⓒ ⓔ Ⓔ ⓕ Ⓕ ⓗ Ⓚ Ⓢ ⓨ
+! Enable fullscreen with F11
+! This runs the extention from ~/.urxvt/ext/<ext-name>
+URxvt.perl-ext-common:  fullscreen
+URxvt.keysym.F11:       perl:fullscreen:switch
