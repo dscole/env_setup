@@ -1382,6 +1382,7 @@ text and copying to the killring."
    (quote
     ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)) t)
  '(desktop-save-mode t)
+ '(dired-listing-switches "-ahBl --group-directories-first")
  '(display-time-mode t)
  '(ein:use-auto-complete t)
  '(ein:use-auto-complete-superpack t)
