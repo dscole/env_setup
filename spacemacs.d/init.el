@@ -729,10 +729,13 @@ to bind to keys in helm-find-files-map"
           company-transformers)
     )
 
+  (setq my--ycmd-path (if (string= system-name "dcolelinux.ny.tower-research.com")
+                          "/spare/local/dcole/venv_el6-norgrp/vim-YouCompleteMe/1.20160711/share/vim/bundle/vim-YouCompleteMe/third_party/ycmd/ycmd"
+                        "/home/dcole/Programs/YouCompleteMe/third_party/ycmd/ycmd"
+                        ))
+
   (with-eval-after-load 'ycmd
-    ;; (setq ycmd-server-command
-    ;;       '("python"
-    ;;         "/spare/local/dcole/venv_el6-norgrp/vim-YouCompleteMe/1.20160711/share/vim/bundle/vim-YouCompleteMe/third_party/ycmd/ycmd"))
+    (setq ycmd-server-command `("python" ,my--ycmd-path))
     (setq ycmd-parse-conditions '(save new-line mode-enabled idle-change))
     (setq ycmd-idle-change-delay 1.0)
     )
@@ -1366,9 +1369,9 @@ text and copying to the killring."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
- '(ac-quick-help-delay 0)
+ '(ac-quick-help-delay 0 t)
  '(ac-use-menu-map t)
- '(avy-all-windows nil t)
+ '(avy-all-windows nil)
  '(browse-url-browser-function (quote browse-url-chromium))
  '(browse-url-chromium-arguments
    (quote
@@ -1380,7 +1383,7 @@ text and copying to the killring."
     ("5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
  '(custom-theme-load-path
    (quote
-    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)) t)
+    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)))
  '(desktop-save-mode t)
  '(dired-listing-switches "-ahBl --group-directories-first")
  '(display-time-mode t)
@@ -1401,8 +1404,8 @@ text and copying to the killring."
  '(helm-ff-tramp-not-fancy nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(helm-substitute-in-filename-stay-on-remote t)
- '(helm-swoop-split-direction (quote split-window-horizontally) t)
- '(helm-swoop-split-with-multiple-windows nil t)
+ '(helm-swoop-split-direction (quote split-window-horizontally))
+ '(helm-swoop-split-with-multiple-windows nil)
  '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
  '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
@@ -1411,7 +1414,7 @@ text and copying to the killring."
  '(org-agenda-files
    (quote
     ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
- '(org-id-locations-file "~/org/personal_org/.org-id-locations")
+ '(org-id-locations-file "~/org/personal_org/.org-id-locations" t)
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-log-state-notes-insert-after-drawers t)
@@ -1474,9 +1477,7 @@ text and copying to the killring."
    (quote
     (face tabs trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark)))
  '(ycmd-extra-conf-whitelist (quote ("/spare/local/dcole/dev/*")))
- '(ycmd-server-command
-   (quote
-    ("python" "/spare/local/dcole/venv_el6-norgrp/vim-YouCompleteMe/1.20160711/share/vim/bundle/vim-YouCompleteMe/third_party/ycmd/ycmd"))))
+ '(ycmd-global-config "~/env_setup/.ycm_extra_conf.py"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
