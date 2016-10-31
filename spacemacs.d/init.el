@@ -1063,6 +1063,20 @@ buffer."
               (flyspell-mode -1)
               )
             )
+  ;; json-glib-validate: file:///tmp/tmpjMJ5Nn: error parsing file: <data>:159:6: Parse error: unexpected character `,', expected string constant
+  (flycheck-define-checker my-python-json-checker
+    "A JSON syntax checker using Python npr.util.common.JsonUtil module."
+    :command ("python" (eval (expand-file-name "~/env_setup/python/validate_json.py")) source)
+    :error-patterns
+    ((error line-start
+            (one-or-more not-newline)
+            "error parsing file: <data>:" line ":" column
+            ": Parse error: "
+            (message)
+            line-end))
+    :modes json-mode
+    )
+
   ;;;;;   --------------------- json (END) ------------------------------ ;;;;
 
   ;;;;;   --------------------- csv (START) ------------------------------ ;;;;
@@ -1404,8 +1418,8 @@ text and copying to the killring."
  '(helm-ff-tramp-not-fancy nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(helm-substitute-in-filename-stay-on-remote t)
- '(helm-swoop-split-direction (quote split-window-horizontally))
- '(helm-swoop-split-with-multiple-windows nil)
+ '(helm-swoop-split-direction (quote split-window-horizontally) t)
+ '(helm-swoop-split-with-multiple-windows nil t)
  '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
  '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
@@ -1461,8 +1475,16 @@ text and copying to the killring."
       ("Symbola"))
      ("Miscellaneous Mathematical Symbols-B"
       ("Symbola"))
+     ("Miscellaneous Symbols"
+      ("Symbola"))
+     ("Miscellaneous Symbols and Arrows"
+      ("Symbola"))
+     ("Miscellaneous Symbols and Pictographs"
+      ("Symbola"))
+     ("Miscellaneous Technical"
+      ("Symbola"))
      ("Private Use Area"
-      ("FontAwesome:style=Regular"))
+      ("FontAwesome:style=Regular" "PowerlineSymbols"))
      ("Supplemental Mathematical Operators"
       ("Symbola")))))
  '(unicode-fonts-debug-availability t)
