@@ -303,6 +303,14 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; (message "BEFORE: helm-projectile-fuzzy-match = (%s)" helm-projectile-fuzzy-match)
   ;; (setq helm-projectile-fuzzy-match nil)
   ;; (message "AFTER: helm-projectile-fuzzy-match = (%s)" helm-projectile-fuzzy-match)
+
+  (setq my--ycmd-path (if (string= system-name "dcolelinux.ny.tower-research.com")
+                          "/spare/local/dcole/venv_el6-norgrp/vim-YouCompleteMe/1.20160711/share/vim/bundle/vim-YouCompleteMe/third_party/ycmd/ycmd"
+                        "/home/dcole/Programs/YouCompleteMe/third_party/ycmd/ycmd"
+                        ))
+
+  (setq ycmd-server-command `("python" ,my--ycmd-path))
+
   )
 
 (defun dotspacemacs/user-config ()
@@ -729,13 +737,7 @@ to bind to keys in helm-find-files-map"
           company-transformers)
     )
 
-  (setq my--ycmd-path (if (string= system-name "dcolelinux.ny.tower-research.com")
-                          "/spare/local/dcole/venv_el6-norgrp/vim-YouCompleteMe/1.20160711/share/vim/bundle/vim-YouCompleteMe/third_party/ycmd/ycmd"
-                        "/home/dcole/Programs/YouCompleteMe/third_party/ycmd/ycmd"
-                        ))
-
   (with-eval-after-load 'ycmd
-    (setq ycmd-server-command `("python" ,my--ycmd-path))
     (setq ycmd-parse-conditions '(save new-line mode-enabled idle-change))
     (setq ycmd-idle-change-delay 1.0)
     )
@@ -1418,8 +1420,8 @@ text and copying to the killring."
  '(helm-ff-tramp-not-fancy nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(helm-substitute-in-filename-stay-on-remote t)
- '(helm-swoop-split-direction (quote split-window-horizontally) t)
- '(helm-swoop-split-with-multiple-windows nil t)
+ '(helm-swoop-split-direction (quote split-window-horizontally))
+ '(helm-swoop-split-with-multiple-windows nil)
  '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
  '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
@@ -1484,7 +1486,7 @@ text and copying to the killring."
      ("Miscellaneous Technical"
       ("Symbola"))
      ("Private Use Area"
-      ("FontAwesome:style=Regular" "PowerlineSymbols"))
+      ("FontAwesome:style=Regular" "PowerlineSymbols" "Source Code Pro"))
      ("Supplemental Mathematical Operators"
       ("Symbola")))))
  '(unicode-fonts-debug-availability t)
@@ -1498,7 +1500,9 @@ text and copying to the killring."
  '(whitespace-style
    (quote
     (face tabs trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark)))
- '(ycmd-extra-conf-whitelist (quote ("/spare/local/dcole/dev/*")))
+ '(ycmd-extra-conf-whitelist
+   (quote
+    ("/spare/local/dcole/dev/*" "/home/dcole/projects/.ycm_extra_conf.py")))
  '(ycmd-global-config "~/env_setup/.ycm_extra_conf.py"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
