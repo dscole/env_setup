@@ -41,7 +41,6 @@ values."
      (auto-completion :variables
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-sort-by-usage t
-                      auto-completion-enable-snippets-in-popup t
                       )
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode)
@@ -1105,6 +1104,7 @@ buffer."
   ;;;;;   --------------------- C++ - rtags (START) ------------------------------ ;;;;
   (add-hook 'c-mode-common-hook
             (lambda()
+              (require 'rtags-helm)
               (rtags-enable-standard-keybindings c-mode-base-map)
               (local-set-key  (kbd "M-.") 'rtags-find-symbol-at-point)
               (local-set-key  (kbd "C->") 'rtags-find-virtuals-at-point)
@@ -1385,7 +1385,7 @@ text and copying to the killring."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
- '(ac-quick-help-delay 0 t)
+ '(ac-quick-help-delay 0)
  '(ac-use-menu-map t)
  '(avy-all-windows nil)
  '(browse-url-browser-function (quote browse-url-chromium))
@@ -1400,7 +1400,6 @@ text and copying to the killring."
  '(custom-theme-load-path
    (quote
     ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)))
- '(desktop-save-mode t)
  '(dired-listing-switches "-ahBl --group-directories-first")
  '(display-time-mode t)
  '(ein:use-auto-complete t)
@@ -1445,6 +1444,7 @@ text and copying to the killring."
  '(paradox-automatically-star nil)
  '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
  '(projectile-generic-command "find -L . -type f -print0")
+ '(python-shell-interpreter-args "-i")
  '(rtags-use-helm t)
  '(split-height-threshold 80)
  '(split-width-threshold 160)
