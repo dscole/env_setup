@@ -214,7 +214,7 @@ URxvt*vt100.modifyOtherKeys: 1
 !  ⑧ ⓐ ⓒ ⓔ Ⓔ ⓕ Ⓕ ⓗ Ⓚ Ⓢ ⓨ  ⌚ ⌛
 ! ! Emacs.font:              Source Code Pro-10
 
-URxvt*font: xft:DejaVu Sans Mono:pixelsize=13,xft:FreeSerif,xft:Symbola,xft:BabelStone Han,xft:FontAwesome,xft:Source Code Pro Medium:pixelsize=13
+URxvt*font: xft:DejaVu Sans Mono:pixelsize=14,xft:FreeSerif,xft:Symbola,xft:BabelStone Han,xft:FontAwesome,xft:Source Code Pro Medium:pixelsize=14
 URxvt*letterSpace:       -1
 URxvt.scrollstyle:       plain
 URxvt.secondaryScreen:   1
