@@ -309,7 +309,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
                         ))
 
   (setq ycmd-server-command `("python" ,my--ycmd-path))
-
+  (setq ycmd-global-config (expand-file-name "~/env_setup/.ycm_extra_conf.py"))
   )
 
 (defun dotspacemacs/user-config ()
@@ -1503,7 +1503,7 @@ text and copying to the killring."
  '(ycmd-extra-conf-whitelist
    (quote
     ("/spare/local/dcole/dev/*" "/home/dcole/projects/.ycm_extra_conf.py")))
- '(ycmd-global-config "~/env_setup/.ycm_extra_conf.py"))
+)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
