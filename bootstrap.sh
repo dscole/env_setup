@@ -2,7 +2,9 @@
 
 
 sudo apt install -y \
+     build-essential \
      cmake \
+     cmake\
      gcc \
      git \
      pidgin \
@@ -117,7 +119,6 @@ sudo make install
 cd ../..
 
 # install ycmd
-sudo apt install -y build-essential cmake python-dev
 cd ycmd
 git submodule update --init --recursive
 ./build.py --clang-completer
