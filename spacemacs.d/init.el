@@ -82,6 +82,10 @@ values."
                                       jedi
                                       rainbow-mode
                                       unicode-fonts
+                                      dockerfile-mode
+                                      google-this
+                                      elf-mode
+                                      cov
                                       )
    ;; A list of packages that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -275,7 +279,7 @@ values."
    dotspacemacs-highlight-delimiters 'all
    ;; If non nil advises quit functions to keep server open when quitting.
    ;; (default nil)
-   dotspacemacs-persistent-server nil
+   dotspacemacs-persistent-server t
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `ag', `pt', `ack' and `grep'.
    ;; (default '("ag" "pt" "ack" "grep"))
@@ -303,12 +307,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; (setq helm-projectile-fuzzy-match nil)
   ;; (message "AFTER: helm-projectile-fuzzy-match = (%s)" helm-projectile-fuzzy-match)
 
-  (setq my--ycmd-path (if (string= system-name "dcolelinux.ny.tower-research.com")
-                          "/spare/local/dcole/venv_el6-norgrp/vim-YouCompleteMe/1.20160711/share/vim/bundle/vim-YouCompleteMe/third_party/ycmd/ycmd"
-                        "/home/dcole/Programs/YouCompleteMe/third_party/ycmd/ycmd"
-                        ))
+  (setq my--ycmd-path "/home/dcole/programs/ycmd/ycmd")
 
-  (setq ycmd-server-command `("python" ,my--ycmd-path))
+  (setq ycmd-server-command `("python" ,my--ycmd-path "--log" "debug" "--keep_logfiles"))
   (setq ycmd-global-config (expand-file-name "~/env_setup/.ycm_extra_conf.py"))
   )
 
@@ -349,15 +350,15 @@ you should place your code here."
        (message "%.06f" (float-time (time-since time)))))
 
   ;; sync files written in /spare/local/dcole/dev to norcompile5.skae
-  (defun sync-to-skae ()
-    "Sync files from /spare/local/dcole/dev to norcompile5.skae"
-    (call-process-shell-command (format "sync-to-skae.sh %s &" buffer-file-name) nil nil 0)
-    )
+  ;; (defun sync-to-skae ()
+  ;;   "Sync files from /spare/local/dcole/dev to norcompile5.skae"
+  ;;   (call-process-shell-command (format "sync-to-skae.sh %s &" buffer-file-name) nil nil 0)
+  ;;   )
 
-  (when (string= system-name "dcolelinux.ny.tower-research.com")
-    (add-hook 'after-save-hook #'sync-to-skae)
-    (add-hook 'after-revert-hook #'sync-to-skae)
-    )
+  ;; (when (string= system-name "dcolelinux.ny.tower-research.com")
+  ;;   (add-hook 'after-save-hook #'sync-to-skae)
+  ;;   (add-hook 'after-revert-hook #'sync-to-skae)
+  ;;   )
 
   ;;Define function that accept a count for the search-forward
   (defun search-forward-count (string count)
@@ -1047,8 +1048,16 @@ buffer."
              ("\t" 0 'trailing-whitespace) ;;Highlight tabs in the same way as trailing whitespaces
              ))
       ) t)
+
+  ;; clang-format on save
+  (add-hook 'c++-mode-hook (lambda ()
+                             (add-hook 'before-save-hook (lambda ()
+                                                           (clang-format-buffer)) nil t)))
   ;;------------------- Adding missing c++11 highlights (END) --------------;;
 
+  ;;;;;   --------------------- elf (START) ------------------------------ ;;;;
+  (add-to-list 'auto-mode-alist '("\\.\\(?:a\\|so\\)\\'" . elf-mode))
+  ;;;;;   --------------------- elf (END) ------------------------------ ;;;;
   ;;;;;   --------------------- json (START) ------------------------------ ;;;;
 
   (add-hook 'json-mode-hook
@@ -1385,7 +1394,7 @@ text and copying to the killring."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
- '(ac-quick-help-delay 0)
+ '(ac-quick-help-delay 0 t)
  '(ac-use-menu-map t)
  '(avy-all-windows nil)
  '(browse-url-browser-function (quote browse-url-chromium))
@@ -1394,6 +1403,7 @@ text and copying to the killring."
     ("--user-data-dir=/spare/local/dcole/google-chrome" " %U")))
  '(browse-url-chromium-program "google-chrome-stable")
  '(compilation-skip-visited t)
+ '(confirm-kill-emacs (quote yes-or-no-p))
  '(custom-safe-themes
    (quote
     ("5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
@@ -1406,7 +1416,10 @@ text and copying to the killring."
  '(ein:use-auto-complete-superpack t)
  '(electric-indent-mode nil)
  '(eshell-scroll-show-maximum-output nil)
+ '(evil-move-cursor-back nil)
  '(evil-want-Y-yank-to-eol t)
+ '(flycheck-disabled-checkers (quote (python-flake8)))
+ '(flycheck-pylint-use-symbolic-id nil)
  '(font-lock-maximum-decoration (quote ((c++-mode . 2) (t . t))))
  '(global-hl-line-mode nil)
  '(global-origami-mode t)
@@ -1444,7 +1457,9 @@ text and copying to the killring."
  '(paradox-automatically-star nil)
  '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
  '(projectile-generic-command "find -L . -type f -print0")
- '(python-shell-interpreter-args "-i")
+ '(python-shell-interpreter "ipython")
+ '(python-shell-interpreter-args "--simple-prompt -i")
+ '(python-shell-virtualenv-path "/home/dcole/py2env")
  '(rtags-use-helm t)
  '(split-height-threshold 80)
  '(split-width-threshold 160)
@@ -1502,8 +1517,7 @@ text and copying to the killring."
     (face tabs trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark)))
  '(ycmd-extra-conf-whitelist
    (quote
-    ("/spare/local/dcole/dev/*" "/home/dcole/projects/.ycm_extra_conf.py")))
-)
+    ("/spare/local/dcole/dev/*" "/home/dcole/projects/.ycm_extra_conf.py"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -1512,4 +1526,6 @@ text and copying to the killring."
  '(aw-leading-char-face ((t (:foreground "chartreuse" :box nil :height 8.0 :width normal))))
  '(flyspell-duplicate ((t (:underline (:color "forest green" :style wave)))))
  '(flyspell-incorrect ((t (:underline (:color "forest green" :style wave)))))
+ '(font-lock-doc-markup-face ((t (:foreground "light steel blue" :weight bold))) t)
+ '(font-lock-doc-string-face ((t (:foreground "orange2"))) t)
  '(whitespace-space ((t (:background "#313131" :foreground "#313131")))))
