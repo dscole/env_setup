@@ -13,6 +13,9 @@ export PATH=$PATH:/usr/lib/llvm-3.6/bin:$HOME/.local/bin
 export PYTHONSTARTUP=$HOME/.pythonstartup
 umask 027
 
+source ~/py2env/bin/activate
+source ~/.bash_profile_local
+
 if [ -f "$HOME/.bashrc" ]; then
     . "$HOME/.bashrc"
 fi
