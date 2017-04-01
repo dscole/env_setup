@@ -1,6 +1,6 @@
 # Getting a working ubuntu environment
 
-
+# General packages
 sudo apt install -y \
      build-essential \
      cmake \
