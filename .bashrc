@@ -145,6 +145,11 @@ esac
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+
+    # fix OTHER WRITABLE color to something sane (green on red, instead of green on blue)
+    # source: http://www.bigsoft.co.uk/blog/index.php/2008/04/11/configuring-ls_colors
+    export LS_COLORS=$LS_COLORS:'ow=32;41'
+
     alias ls='ls --color=auto'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
