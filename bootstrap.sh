@@ -45,8 +45,6 @@ mkdir programs
 cd programs
 
 mv ~/Downloads/emacs-25.1 .
-git clone --recursive https://github/Andresbakken/rtags.git
-git clone https://github/Valloric/ycmd.git
 git clone https://github/dscole/ace-window.git
 
 # gnome plugin for full screen fix
@@ -82,7 +80,7 @@ sudo apt install -y \
 
 cd emacs-25.1
 ./configure CFLAGS=-no-pie --with-modules --with-xwidgets --with-x-tollkit=gtk3
-make -j4
+make -j7
 sudo make install
 cd ..
 
@@ -111,14 +109,16 @@ sudo apt install \
      python-clang-3.9
 
 # install rtags
-mkdir rtags/build
+git clone --recursive https://github.com/Andersbakken/rtags.git
+mkdir -p rtags/build
 cd rtags/build
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ..
-make -j4
+make -j7
 sudo make install
 cd ../..
 
 # install ycmd
+git clone https://github.com/Valloric/ycmd.git
 cd ycmd
 git submodule update --init --recursive
 ./build.py --clang-completer
