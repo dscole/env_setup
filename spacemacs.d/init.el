@@ -46,7 +46,7 @@ values."
             c-c++-default-mode-for-headers 'c++-mode
 	    c-c++-backend 'ccls
 	    )
-     (docker :variables dockerfile-mode-enable-lsp t)
+     docker
      emacs-lisp
      git
      helm
@@ -188,7 +188,7 @@ values."
    dotspacemacs-retain-visual-state-on-shift t
    ;; If non-nil, J and K move lines up and down when in visual mode.
    ;; (default nil)
-   dotspacemacs-visual-line-move-text nil
+   dotspacemacs-visual-line-move-text t
    ;; If non nil, inverse the meaning of `g' in `:substitute' Evil ex-command.
    ;; (default nil)
    dotspacemacs-ex-substitute-global nil
@@ -1336,6 +1336,18 @@ text and copying to the killring."
     ;; )
   ;;;;;   --------------------- org-mode (END) ------------------------------ ;;;;
 
+  ;;;;;   --------------------- markdown-mode (START) ------------------------------ ;;;;
+  (defun markdown-live-preview-window-webkit (file)
+    "Preview FILE with webkit.
+To be used with `markdown-live-preview-window-function'."
+    (xwidget-webkit-goto-url (concat "file://"
+                                     (and (memq system-type '(windows-nt ms-dos))
+                                          "/")
+                                     (expand-file-name file)))
+    (get-buffer "*xwidget webkit:  *")
+    )
+  ;;;;;   --------------------- markdown-mode (END) ------------------------------ ;;;;
+
   ;;;;;   ------------------- external-editor (START) -------------------- ;;;;
   (with-eval-after-load 'edit-server
     (edit-server-start)
@@ -1366,7 +1378,7 @@ text and copying to the killring."
   (load-theme 'my-spacemacs-wombat t)
 
   ;; Start the emacs server so I can connect via emacsclient -t
-  (server-start)
+  ;; (server-start)
 
   ;; ESC doesn't work from emacsclient -t
   (global-set-key (kbd "C-t") 'evil-force-normal-state)
@@ -1385,7 +1397,7 @@ text and copying to the killring."
  '(ac-auto-show-menu t)
  '(ac-quick-help-delay 0 t)
  '(ac-use-menu-map t)
- '(avy-all-windows nil)
+ '(avy-all-windows nil t)
  '(browse-url-browser-function (quote browse-url-chromium))
  '(browse-url-chromium-arguments
    (quote
@@ -1395,10 +1407,10 @@ text and copying to the killring."
  '(confirm-kill-emacs (quote yes-or-no-p))
  '(custom-safe-themes
    (quote
-    ("5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
+    ("da3cdfc2251906a1887c758048eccf5590d8cfbccf013ea836a2d6003c52782b" "5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
  '(custom-theme-load-path
    (quote
-    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)))
+    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)) t)
  '(dired-listing-switches "-ahBl --group-directories-first")
  '(display-time-mode t)
  '(ein:use-auto-complete t)
@@ -1421,11 +1433,16 @@ text and copying to the killring."
  '(helm-ff-tramp-not-fancy nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(helm-substitute-in-filename-stay-on-remote t)
- '(helm-swoop-split-direction (quote split-window-horizontally))
- '(helm-swoop-split-with-multiple-windows nil)
+ '(helm-swoop-split-direction (quote split-window-horizontally) t)
+ '(helm-swoop-split-with-multiple-windows nil t)
  '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
  '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
+ '(markdown-command
+   "pandoc -r markdown_github+fenced_code_blocks+fenced_code_attributes -w html -s --highlight-style=zenburn")
+ '(markdown-content-type "
+")
+ '(markdown-live-preview-window-function (quote markdown-live-preview-window-eww))
  '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
  '(next-error-recenter (quote (4)))
  '(org-agenda-files
@@ -1442,13 +1459,14 @@ text and copying to the killring."
  '(org-return-follows-link t)
  '(package-selected-packages
    (quote
-    (yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (winum org-mime fuzzy powerline org-category-capture dash-functional projectile google-this skewer-mode js2-mode simple-httpd dockerfile-mode diminish cov bind-key packed avy highlight iedit smartparens bind-map f s evil goto-chg undo-tree helm helm-core ghub let-alist dash async hydra yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(paradox-automatically-star nil)
  '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
  '(projectile-generic-command "find -L . -type f -print0")
- '(python-shell-interpreter "ipython")
- '(python-shell-interpreter-args "--simple-prompt -i")
+ '(python-shell-interpreter "ipython" t)
+ '(python-shell-interpreter-args "--simple-prompt -i" t)
  '(python-shell-virtualenv-path "/home/dcole/py2env")
+ '(python-shell-virtualenv-root "/home/dcole/py2env")
  '(rtags-use-helm t)
  '(split-height-threshold 80)
  '(split-width-threshold 160)
@@ -1529,9 +1547,10 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
- '(ac-quick-help-delay 0 t)
+ '(ac-quick-help-delay 0)
  '(ac-use-menu-map t)
  '(avy-all-windows nil)
+ '(browse-url-browser-function (quote browse-url-chromium))
  '(browse-url-chromium-arguments
    (quote
     ("--user-data-dir=/spare/local/dcole/google-chrome" " %U")))
@@ -1566,17 +1585,22 @@ This function is called at the very end of Spacemacs initialization."
  '(helm-ff-tramp-not-fancy nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(helm-substitute-in-filename-stay-on-remote t)
- '(helm-swoop-split-direction (quote split-window-horizontally))
- '(helm-swoop-split-with-multiple-windows nil)
+ '(helm-swoop-split-direction (quote split-window-horizontally) t)
+ '(helm-swoop-split-with-multiple-windows nil t)
  '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
  '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
+ '(markdown-command
+   "pandoc -r markdown_github+fenced_code_blocks+fenced_code_attributes -w html -s --highlight-style=zenburn")
+ '(markdown-content-type "
+")
+ '(markdown-live-preview-window-function (quote markdown-live-preview-window-eww))
  '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
  '(next-error-recenter (quote (4)))
  '(org-agenda-files
    (quote
     ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
- '(org-id-locations-file "~/org/personal_org/.org-id-locations" t)
+ '(org-id-locations-file "~/org/personal_org/.org-id-locations")
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-log-state-notes-insert-after-drawers t)
@@ -1587,7 +1611,7 @@ This function is called at the very end of Spacemacs initialization."
  '(org-return-follows-link t)
  '(package-selected-packages
    (quote
-    (yasnippet-snippets winum symon string-inflection spaceline-all-the-icons powerline pippel pipenv password-generator spinner overseer org-category-capture org-mime org-brain ob-ipython dash-functional nameless magit-svn importmagic parent-mode helm-xref helm-rtags window-purpose imenu-list helm-git-grep google-this google-c-style gitignore-templates fuzzy flycheck-rtags flx evil-org ghub treepy graphql evil-lion iedit evil-goggles evil-cleverparens smartparens paredit anzu highlight elf-mode skewer-mode js2-mode simple-httpd editorconfig doom-modeline eldoc-eval shrink-path all-the-icons memoize dockerfile-mode cov elquery counsel-projectile projectile counsel swiper ivy pkg-info let-alist epl company-rtags company-lua centered-cursor-mode packed f dash s helm avy helm-core popup hydra font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (yasnippet-snippets symon string-inflection spaceline-all-the-icons pippel pipenv password-generator spinner overseer org-brain ob-ipython nameless magit-svn importmagic parent-mode helm-xref helm-rtags window-purpose imenu-list helm-git-grep google-c-style gitignore-templates flycheck-rtags flx evil-org treepy graphql evil-lion evil-goggles evil-cleverparens paredit anzu elf-mode editorconfig doom-modeline eldoc-eval shrink-path all-the-icons memoize elquery counsel-projectile counsel swiper ivy pkg-info epl company-rtags company-lua centered-cursor-mode popup font-lock+ dotenv-mode winum org-mime fuzzy powerline org-category-capture dash-functional projectile google-this skewer-mode js2-mode simple-httpd dockerfile-mode diminish cov bind-key packed avy highlight iedit smartparens bind-map f s evil goto-chg undo-tree helm helm-core ghub let-alist dash async hydra yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(paradox-automatically-star nil)
  '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
  '(projectile-generic-command "find -L . -type f -print0")
