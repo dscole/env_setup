@@ -43,8 +43,10 @@ values."
                       auto-completion-enable-sort-by-usage t
                       )
      (c-c++ :variables
-            c-c++-default-mode-for-headers 'c++-mode)
-
+            c-c++-default-mode-for-headers 'c++-mode
+	    c-c++-backend 'ccls
+	    )
+     (docker :variables dockerfile-mode-enable-lsp t)
      emacs-lisp
      git
      helm
@@ -86,6 +88,7 @@ values."
                                       google-this
                                       elf-mode
                                       cov
+                                      lsp
                                       )
    ;; A list of packages that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -146,7 +149,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(hc-zenburn
+   dotspacemacs-themes '(;;hc-zenburn
                          my-spacemacs-wombat)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -717,9 +720,6 @@ to bind to keys in helm-find-files-map"
   (defun my-do-ag (path)
     (helm-do-ag (file-name-directory path)))
 
-  ;; Make helm's "smart search" version of ag run on M-g a inside helm-find-files
-  (define-key helm-find-files-map (kbd "M-g a") (create-helm-ff-wrapper-2 'my-do-ag))
-
 
   ;;;;; --------------------- Custom Functions (END) ---------------------;;;;
 
@@ -742,25 +742,6 @@ to bind to keys in helm-find-files-map"
     (setq ycmd-idle-change-delay 1.0)
     )
 
-  ;; Magit setup
-  (with-eval-after-load 'magit
-    (dolist (inserter '(magit-insert-modules-unpulled-from-upstream
-                        magit-insert-modules-unpulled-from-pushremote
-                        magit-insert-modules-unpushed-to-upstream
-                        magit-insert-modules-unpushed-to-pushremote
-                        magit-insert-submodules))
-      (magit-add-section-hook
-       'magit-status-sections-hook inserter
-       'magit-insert-unpulled-from-upstream))
-    (add-hook 'magit-status-mode-hook
-              (lambda ()
-                (local-set-key  (kbd "C-c p") 'magit-push-implicitly)
-                )
-              )
-    (define-key magit-mode-map (kbd "C") 'magit-gerrit-popup)
-    )
-
-  ;;
   ;; Define magit-log funcs for current directory
   (defun my-magit-log-buffer-file (&optional follow beg end)
     "Show log for the blob or file visited in the current buffer.
@@ -848,8 +829,13 @@ buffer."
       )
     )
 
-  (define-key helm-find-files-map (kbd "M-g g") (create-helm-ff-wrapper-2 'my-magit-dir-log))
-  (define-key helm-find-files-map (kbd "M-g G") (create-helm-ff-wrapper-2 'my-magit-dir-log-popup))
+  ;; Make helm's "smart search" version of ag run on M-g a inside helm-find-files
+  (with-eval-after-load 'helm-files
+    (define-key helm-find-files-map (kbd "M-g a") (create-helm-ff-wrapper-2 'my-do-ag))
+    (define-key helm-find-files-map (kbd "M-g g") (create-helm-ff-wrapper-2 'my-magit-dir-log))
+    (define-key helm-find-files-map (kbd "M-g G") (create-helm-ff-wrapper-2 'my-magit-dir-log-popup))
+    )
+
   ;; if remote url is not using the default gerrit port and
   ;; ssh scheme, need to manually set this variable
   (setq-default magit-gerrit-ssh-creds "dcole@norgerrit.tower-research.com:29418")
@@ -1074,17 +1060,20 @@ buffer."
               )
             )
   ;; json-glib-validate: file:///tmp/tmpjMJ5Nn: error parsing file: <data>:159:6: Parse error: unexpected character `,', expected string constant
-  (flycheck-define-checker my-python-json-checker
-    "A JSON syntax checker using Python npr.util.common.JsonUtil module."
-    :command ("python" (eval (expand-file-name "~/env_setup/python/validate_json.py")) source)
-    :error-patterns
-    ((error line-start
-            (one-or-more not-newline)
-            "error parsing file: <data>:" line ":" column
-            ": Parse error: "
-            (message)
-            line-end))
-    :modes json-mode
+
+  (with-eval-after-load 'flycheck
+    (flycheck-define-checker my-python-json-checker
+      "A JSON syntax checker using Python npr.util.common.JsonUtil module."
+      :command ("python" (eval (expand-file-name "~/env_setup/python/validate_json.py")) source)
+      :error-patterns
+      ((error line-start
+              (one-or-more not-newline)
+              "error parsing file: <data>:" line ":" column
+              ": Parse error: "
+              (message)
+              line-end))
+      :modes json-mode
+      )
     )
 
   ;;;;;   --------------------- json (END) ------------------------------ ;;;;
@@ -1529,3 +1518,150 @@ text and copying to the killring."
  '(font-lock-doc-markup-face ((t (:foreground "light steel blue" :weight bold))) t)
  '(font-lock-doc-string-face ((t (:foreground "orange2"))) t)
  '(whitespace-space ((t (:background "#313131" :foreground "#313131")))))
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ac-auto-show-menu t)
+ '(ac-quick-help-delay 0 t)
+ '(ac-use-menu-map t)
+ '(avy-all-windows nil)
+ '(browse-url-chromium-arguments
+   (quote
+    ("--user-data-dir=/spare/local/dcole/google-chrome" " %U")))
+ '(browse-url-chromium-program "google-chrome-stable")
+ '(compilation-skip-visited t)
+ '(confirm-kill-emacs (quote yes-or-no-p))
+ '(custom-safe-themes
+   (quote
+    ("da3cdfc2251906a1887c758048eccf5590d8cfbccf013ea836a2d6003c52782b" "5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
+ '(custom-theme-load-path
+   (quote
+    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)) t)
+ '(dired-listing-switches "-ahBl --group-directories-first")
+ '(display-time-mode t)
+ '(ein:use-auto-complete t)
+ '(ein:use-auto-complete-superpack t)
+ '(electric-indent-mode nil)
+ '(eshell-scroll-show-maximum-output nil)
+ '(evil-move-cursor-back nil)
+ '(evil-want-Y-yank-to-eol t)
+ '(flycheck-disabled-checkers (quote (python-flake8)))
+ '(flycheck-pylint-use-symbolic-id nil)
+ '(font-lock-maximum-decoration (quote ((c++-mode . 2) (t . t))))
+ '(global-hl-line-mode nil)
+ '(global-origami-mode t)
+ '(global-whitespace-mode nil)
+ '(helm-boring-file-regexp-list
+   (quote
+    ("\\.o$" "~$" "\\.bin$" "\\.lbin$" "\\.so$" "\\.a$" "\\.ln$" "\\.elc$" "\\.pyc$" "\\.#")))
+ '(helm-buffer-max-length nil)
+ '(helm-ff-skip-boring-files t)
+ '(helm-ff-tramp-not-fancy nil)
+ '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
+ '(helm-substitute-in-filename-stay-on-remote t)
+ '(helm-swoop-split-direction (quote split-window-horizontally))
+ '(helm-swoop-split-with-multiple-windows nil)
+ '(magit-branch-prefer-remote-upstream (quote ("master")))
+ '(magit-diff-use-overlays nil)
+ '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
+ '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
+ '(next-error-recenter (quote (4)))
+ '(org-agenda-files
+   (quote
+    ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
+ '(org-id-locations-file "~/org/personal_org/.org-id-locations" t)
+ '(org-log-into-drawer t)
+ '(org-log-reschedule (quote time))
+ '(org-log-state-notes-insert-after-drawers t)
+ '(org-outline-path-complete-in-steps nil)
+ '(org-refile-allow-creating-parent-nodes nil)
+ '(org-refile-targets (quote ((org-agenda-files :maxlevel . 10))))
+ '(org-refile-use-outline-path (quote file))
+ '(org-return-follows-link t)
+ '(package-selected-packages
+   (quote
+    (yasnippet-snippets winum symon string-inflection spaceline-all-the-icons powerline pippel pipenv password-generator spinner overseer org-category-capture org-mime org-brain ob-ipython dash-functional nameless magit-svn importmagic parent-mode helm-xref helm-rtags window-purpose imenu-list helm-git-grep google-this google-c-style gitignore-templates fuzzy flycheck-rtags flx evil-org ghub treepy graphql evil-lion iedit evil-goggles evil-cleverparens smartparens paredit anzu highlight elf-mode skewer-mode js2-mode simple-httpd editorconfig doom-modeline eldoc-eval shrink-path all-the-icons memoize dockerfile-mode cov elquery counsel-projectile projectile counsel swiper ivy pkg-info let-alist epl company-rtags company-lua centered-cursor-mode packed f dash s helm avy helm-core popup hydra font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+ '(paradox-automatically-star nil)
+ '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
+ '(projectile-generic-command "find -L . -type f -print0")
+ '(python-shell-interpreter "ipython")
+ '(python-shell-interpreter-args "--simple-prompt -i")
+ '(python-shell-virtualenv-path "/home/dcole/py2env")
+ '(python-shell-virtualenv-root "/home/dcole/py2env")
+ '(rtags-use-helm t)
+ '(split-height-threshold 80)
+ '(split-width-threshold 160)
+ '(term-buffer-maximum-size 100)
+ '(truncate-lines t)
+ '(undo-tree-auto-save-history nil)
+ '(unicode-fonts-block-font-mapping
+   (quote
+    (("Combining Diacritical Marks"
+      ("Symbola"))
+     ("Combining Diacritical Marks Extended"
+      ("Symbola"))
+     ("Combining Diacritical Marks Supplement"
+      ("Symbola"))
+     ("Combining Diacritical Marks for Symbols"
+      ("Symbola"))
+     ("Enclosed Alphanumeric Supplement"
+      ("BabelStone Han"))
+     ("Enclosed Alphanumerics"
+      ("BabelStone Han"))
+     ("Enclosed CJK Letters and Months"
+      ("BabelStone Han"))
+     ("Enclosed Ideographic Supplement"
+      ("BabelStone Han"))
+     ("Mathematical Alphanumeric Symbols"
+      ("Symbola"))
+     ("Mathematical Operators"
+      ("Symbola"))
+     ("Miscellaneous Mathematical Symbols-A"
+      ("Symbola"))
+     ("Miscellaneous Mathematical Symbols-B"
+      ("Symbola"))
+     ("Miscellaneous Symbols"
+      ("Symbola"))
+     ("Miscellaneous Symbols and Arrows"
+      ("Symbola"))
+     ("Miscellaneous Symbols and Pictographs"
+      ("Symbola"))
+     ("Miscellaneous Technical"
+      ("Symbola"))
+     ("Private Use Area"
+      ("FontAwesome:style=Regular" "PowerlineSymbols" "Source Code Pro"))
+     ("Supplemental Mathematical Operators"
+      ("Symbola")))))
+ '(unicode-fonts-debug-availability t)
+ '(unicode-fonts-fallback-font-list (quote ("Symbola" "Quivira")))
+ '(unicode-fonts-ignore-overrides nil)
+ '(unicode-fonts-overrides-mapping nil)
+ '(unicode-fonts-skip-fonts (quote ("STIX Math")))
+ '(whitespace-action nil)
+ '(whitespace-display-mappings (quote ((tab-mark 9 [187 9] [92 9]))))
+ '(whitespace-line-column 200)
+ '(whitespace-style
+   (quote
+    (face tabs trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark)))
+ '(ycmd-extra-conf-whitelist
+   (quote
+    ("/spare/local/dcole/dev/*" "/home/dcole/projects/.ycm_extra_conf.py"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(aw-leading-char-face ((t (:foreground "chartreuse" :box nil :height 8.0 :width normal))))
+ '(flyspell-duplicate ((t (:underline (:color "forest green" :style wave)))))
+ '(flyspell-incorrect ((t (:underline (:color "forest green" :style wave)))))
+ '(font-lock-doc-markup-face ((t (:foreground "light steel blue" :weight bold))) t)
+ '(font-lock-doc-string-face ((t (:foreground "orange2"))) t)
+ '(whitespace-space ((t (:background "#313131" :foreground "#313131")))))
+)
