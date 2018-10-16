@@ -27,7 +27,7 @@ values."
    ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path nil ;; '("~/.spacemacs.d/private_layers")
+   dotspacemacs-configuration-layer-path nil
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
@@ -44,21 +44,30 @@ values."
                       )
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode
-	    c-c++-backend 'ccls
+            c-c++-backend 'lsp-ccls
+            c-c++-lsp-executable (file-truename "~/programs/ccls/Release/ccls")
+            c-c++-lsp-sem-highlight-method 'font-lock
 	    )
+     lsp
      docker
      emacs-lisp
      git
      helm
      ;; javascript
      markdown
-     org
+     (org :variables
+          org-enable-reveal-js-support t
+          org-enable-org-journal-support t
+          )
      python
      spell-checking
      syntax-checking
-     ycmd
+     ;; ycmd
      no-dots
      ipython-notebook
+     cmake
+     spacemacs-docker
+     treemacs
      ;; evil-snipe  -- didn't quite install properly for me (had some errors)
      ;; (evil-snipe :variables
      ;;             evil-snipe-enable-alternate-f-and-t-behaviors t)
@@ -73,7 +82,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(rtags
+   dotspacemacs-additional-packages '(;;rtags
                                       edit-server
                                       gmail-message-mode
                                       json-mode
@@ -88,10 +97,9 @@ values."
                                       google-this
                                       elf-mode
                                       cov
-                                      lsp
                                       )
    ;; A list of packages that will not be install and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(neotree)
    ;; Defines the behaviour of Spacemacs when downloading packages.
    ;; Possible values are `used', `used-but-keep-unused' and `all'. `used' will
    ;; download only explicitly used packages and remove any unused packages as
@@ -737,10 +745,10 @@ to bind to keys in helm-find-files-map"
           company-transformers)
     )
 
-  (with-eval-after-load 'ycmd
-    (setq ycmd-parse-conditions '(save new-line mode-enabled idle-change))
-    (setq ycmd-idle-change-delay 1.0)
-    )
+  ;; (with-eval-after-load 'ycmd
+  ;;   (setq ycmd-parse-conditions '(save new-line mode-enabled idle-change))
+  ;;   (setq ycmd-idle-change-delay 1.0)
+  ;;   )
 
   ;; Define magit-log funcs for current directory
   (defun my-magit-log-buffer-file (&optional follow beg end)
@@ -1100,82 +1108,82 @@ buffer."
 
 
   ;;;;;   --------------------- C++ - rtags (START) ------------------------------ ;;;;
-  (add-hook 'c-mode-common-hook
-            (lambda()
-              (require 'rtags-helm)
-              (rtags-enable-standard-keybindings c-mode-base-map)
-              (local-set-key  (kbd "M-.") 'rtags-find-symbol-at-point)
-              (local-set-key  (kbd "C->") 'rtags-find-virtuals-at-point)
-              (local-set-key  (kbd "M-,") 'rtags-find-references-at-point)
-              (local-set-key  (kbd "C-'") 'rtags-imenu)
-              (local-set-key  (kbd "C-,") 'rtags-find-references)
-              (local-set-key  (kbd "<C-right>") 'rtags-next-match)
-              (local-set-key  (kbd "<C-left>")  'rtags-previous-match)
-              (local-set-key  (kbd "<C-up>")    'rtags-location-stack-back)
-              (local-set-key  (kbd "<C-down>")  'rtags-location-stack-forward)
-              (local-set-key  (kbd "M-n") 'rtags-next-match)
-              (local-set-key  (kbd "M-p") 'rtags-previous-match)
-              (global-set-key (kbd "C-c C-n") 'flycheck-next-error)
-              (global-set-key (kbd "C-c C-p") 'flycheck-previous-error)
-              (local-set-key  (kbd "C-c C-n") 'flycheck-next-error)
-              (local-set-key  (kbd "C-c C-p") 'flycheck-previous-error)
-              (remove-hook 'kill-buffer-hook 'rtags-kill-buffer-hook)
-              )
-            )
-  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "r." 'rtags-find-symbol-at-point)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "." 'rtags-find-symbol-at-point)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "," 'rtags-find-references-at-point)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "p" 'rtags-location-stack-back)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "n" 'rtags-location-stack-forward)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "m" 'helm-imenu)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "SPC" 'gud-break)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "TAB" 'clang-format-buffer)
+  ;; (add-hook 'c-mode-common-hook
+  ;;           (lambda()
+  ;;             (require 'rtags-helm)
+  ;;             (rtags-enable-standard-keybindings c-mode-base-map)
+  ;;             (local-set-key  (kbd "M-.") 'rtags-find-symbol-at-point)
+  ;;             (local-set-key  (kbd "C->") 'rtags-find-virtuals-at-point)
+  ;;             (local-set-key  (kbd "M-,") 'rtags-find-references-at-point)
+  ;;             (local-set-key  (kbd "C-'") 'rtags-imenu)
+  ;;             (local-set-key  (kbd "C-,") 'rtags-find-references)
+  ;;             (local-set-key  (kbd "<C-right>") 'rtags-next-match)
+  ;;             (local-set-key  (kbd "<C-left>")  'rtags-previous-match)
+  ;;             (local-set-key  (kbd "<C-up>")    'rtags-location-stack-back)
+  ;;             (local-set-key  (kbd "<C-down>")  'rtags-location-stack-forward)
+  ;;             (local-set-key  (kbd "M-n") 'rtags-next-match)
+  ;;             (local-set-key  (kbd "M-p") 'rtags-previous-match)
+  ;;             (global-set-key (kbd "C-c C-n") 'flycheck-next-error)
+  ;;             (global-set-key (kbd "C-c C-p") 'flycheck-previous-error)
+  ;;             (local-set-key  (kbd "C-c C-n") 'flycheck-next-error)
+  ;;             (local-set-key  (kbd "C-c C-p") 'flycheck-previous-error)
+  ;;             (remove-hook 'kill-buffer-hook 'rtags-kill-buffer-hook)
+  ;;             )
+  ;;           )
+  ;; ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "r." 'rtags-find-symbol-at-point)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "." 'rtags-find-symbol-at-point)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "," 'rtags-find-references-at-point)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "p" 'rtags-location-stack-back)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "n" 'rtags-location-stack-forward)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "m" 'helm-imenu)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "SPC" 'gud-break)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "TAB" 'clang-format-buffer)
 
-  (spacemacs/declare-prefix-for-mode 'c++-mode "r" "rtags")
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rs" 'rtags-find-symbol)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rr" 'rtags-find-references)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rc" 'rtags-print-class-hierarchy)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rv" 'rtags-find-virtuals-at-point)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ri" 'rtags-include-file)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rI" 'rtags-get-include-file-for-symbol)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rn" 'rtags-rename-symbol)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "re" 'rtags-print-enum-value-at-point)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rh" 'rtags-print-symbol-info)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rt" 'rtags-symbol-type)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ry" 'rtags-copy-and-print-current-location)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rd" 'rtags-print-dependencies)
+  ;; (spacemacs/declare-prefix-for-mode 'c++-mode "r" "rtags")
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rs" 'rtags-find-symbol)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rr" 'rtags-find-references)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rc" 'rtags-print-class-hierarchy)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rv" 'rtags-find-virtuals-at-point)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ri" 'rtags-include-file)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rI" 'rtags-get-include-file-for-symbol)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rn" 'rtags-rename-symbol)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "re" 'rtags-print-enum-value-at-point)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rh" 'rtags-print-symbol-info)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rt" 'rtags-symbol-type)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ry" 'rtags-copy-and-print-current-location)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "rd" 'rtags-print-dependencies)
 
-  (spacemacs/declare-prefix-for-mode 'c++-mode "h" "help")
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "hh" 'ycmd-show-documentation)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ht" 'ycmd-get-type)
+  ;; (spacemacs/declare-prefix-for-mode 'c++-mode "h" "help")
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "hh" 'ycmd-show-documentation)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ht" 'ycmd-get-type)
 
-  (spacemacs/declare-prefix-for-mode 'c++-mode "y" "ycmd")
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "yh" 'ycmd-show-documentation)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "yt" 'ycmd-get-type)
+  ;; (spacemacs/declare-prefix-for-mode 'c++-mode "y" "ycmd")
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "yh" 'ycmd-show-documentation)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "yt" 'ycmd-get-type)
 
-  (spacemacs/declare-prefix-for-mode 'c++-mode "d" "debugging")
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "db" 'gud-break)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dn" 'gud-step)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "di" 'gud-stepi)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dc" 'gud-cont)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "df" 'gud-finish)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "d>" 'gud-down)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "d<" 'gud-up)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "du" 'gud-until)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dg" 'gud-go)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dn" 'gud-next)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dj" 'gud-jump)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dp" 'gud-print)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dd" 'gud-remove)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "de" 'gud-refresh)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dr" 'gud-run)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ds" 'gud-symbol)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dt" 'gud-tbreak)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dv" 'gud-val)
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dw" 'gud-watch)
+  ;; (spacemacs/declare-prefix-for-mode 'c++-mode "d" "debugging")
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "db" 'gud-break)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dn" 'gud-step)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "di" 'gud-stepi)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dc" 'gud-cont)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "df" 'gud-finish)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "d>" 'gud-down)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "d<" 'gud-up)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "du" 'gud-until)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dg" 'gud-go)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dn" 'gud-next)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dj" 'gud-jump)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dp" 'gud-print)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dd" 'gud-remove)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "de" 'gud-refresh)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dr" 'gud-run)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ds" 'gud-symbol)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dt" 'gud-tbreak)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dv" 'gud-val)
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "dw" 'gud-watch)
 
-  (spacemacs/declare-prefix-for-mode 'c++-mode "e" "place_holder")
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ee" 'smartparens-mode)
+  ;; (spacemacs/declare-prefix-for-mode 'c++-mode "e" "place_holder")
+  ;; (spacemacs/set-leader-keys-for-major-mode 'c++-mode "ee" 'smartparens-mode)
   ;;;;;   --------------------- rtags (END) ------------------------------ ;;;;
 
   ;;;;;   --------------------- C++ - rtags (END) ------------------------------ ;;;;
@@ -1465,9 +1473,8 @@ To be used with `markdown-live-preview-window-function'."
  '(projectile-generic-command "find -L . -type f -print0")
  '(python-shell-interpreter "ipython" t)
  '(python-shell-interpreter-args "--simple-prompt -i" t)
- '(python-shell-virtualenv-path "/home/dcole/py2env")
- '(python-shell-virtualenv-root "/home/dcole/py2env")
- '(rtags-use-helm t)
+ '(python-shell-virtualenv-path "/home/dcole/py3env")
+ '(python-shell-virtualenv-root "/home/dcole/py3env")
  '(split-height-threshold 80)
  '(split-width-threshold 160)
  '(term-buffer-maximum-size 100)
@@ -1547,9 +1554,9 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
- '(ac-quick-help-delay 0)
+ '(ac-quick-help-delay 0 t)
  '(ac-use-menu-map t)
- '(avy-all-windows nil)
+ '(avy-all-windows nil t)
  '(browse-url-browser-function (quote browse-url-chromium))
  '(browse-url-chromium-arguments
    (quote
@@ -1585,8 +1592,8 @@ This function is called at the very end of Spacemacs initialization."
  '(helm-ff-tramp-not-fancy nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(helm-substitute-in-filename-stay-on-remote t)
- '(helm-swoop-split-direction (quote split-window-horizontally) t)
- '(helm-swoop-split-with-multiple-windows nil t)
+ '(helm-swoop-split-direction (quote split-window-horizontally))
+ '(helm-swoop-split-with-multiple-windows nil)
  '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
  '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
@@ -1600,7 +1607,8 @@ This function is called at the very end of Spacemacs initialization."
  '(org-agenda-files
    (quote
     ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
- '(org-id-locations-file "~/org/personal_org/.org-id-locations")
+ '(org-id-locations-file "~/org/personal_org/.org-id-locations" t)
+ '(org-journal-file-format "%Y%m%d.org")
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-log-state-notes-insert-after-drawers t)
@@ -1611,15 +1619,14 @@ This function is called at the very end of Spacemacs initialization."
  '(org-return-follows-link t)
  '(package-selected-packages
    (quote
-    (yasnippet-snippets symon string-inflection spaceline-all-the-icons pippel pipenv password-generator spinner overseer org-brain ob-ipython nameless magit-svn importmagic parent-mode helm-xref helm-rtags window-purpose imenu-list helm-git-grep google-c-style gitignore-templates flycheck-rtags flx evil-org treepy graphql evil-lion evil-goggles evil-cleverparens paredit anzu elf-mode editorconfig doom-modeline eldoc-eval shrink-path all-the-icons memoize elquery counsel-projectile counsel swiper ivy pkg-info epl company-rtags company-lua centered-cursor-mode popup font-lock+ dotenv-mode winum org-mime fuzzy powerline org-category-capture dash-functional projectile google-this skewer-mode js2-mode simple-httpd dockerfile-mode diminish cov bind-key packed avy highlight iedit smartparens bind-map f s evil goto-chg undo-tree helm helm-core ghub let-alist dash async hydra yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (org-journal winum org-mime fuzzy powerline org-category-capture dash-functional projectile google-this skewer-mode js2-mode simple-httpd dockerfile-mode diminish cov bind-key packed avy highlight iedit smartparens bind-map f s evil goto-chg undo-tree helm helm-core ghub let-alist dash async hydra yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(paradox-automatically-star nil)
  '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
  '(projectile-generic-command "find -L . -type f -print0")
  '(python-shell-interpreter "ipython")
  '(python-shell-interpreter-args "--simple-prompt -i")
- '(python-shell-virtualenv-path "/home/dcole/py2env")
- '(python-shell-virtualenv-root "/home/dcole/py2env")
- '(rtags-use-helm t)
+ '(python-shell-virtualenv-path "/home/dcole/py3env")
+ '(python-shell-virtualenv-root "/home/dcole/py3env")
  '(split-height-threshold 80)
  '(split-width-threshold 160)
  '(term-buffer-maximum-size 100)
