@@ -59,6 +59,7 @@ values."
           org-enable-reveal-js-support t
           org-enable-org-journal-support t
           )
+     spacemacs-org
      python
      spell-checking
      syntax-checking
@@ -322,6 +323,10 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   (setq ycmd-server-command `("python" ,my--ycmd-path "--log" "debug" "--keep_logfiles"))
   (setq ycmd-global-config (expand-file-name "~/env_setup/.ycm_extra_conf.py"))
+  (with-eval-after-load 'ob-ipython
+    (print "I don't like you ob-ipython!!")
+    (remove-hook 'org-mode-hook 'ob-ipython-auto-configure-kernels)
+    )
   )
 
 (defun dotspacemacs/user-config ()
@@ -1557,11 +1562,6 @@ This function is called at the very end of Spacemacs initialization."
  '(ac-quick-help-delay 0 t)
  '(ac-use-menu-map t)
  '(avy-all-windows nil t)
- '(browse-url-browser-function (quote browse-url-chromium))
- '(browse-url-chromium-arguments
-   (quote
-    ("--user-data-dir=/spare/local/dcole/google-chrome" " %U")))
- '(browse-url-chromium-program "google-chrome-stable")
  '(compilation-skip-visited t)
  '(confirm-kill-emacs (quote yes-or-no-p))
  '(custom-safe-themes
@@ -1592,8 +1592,8 @@ This function is called at the very end of Spacemacs initialization."
  '(helm-ff-tramp-not-fancy nil)
  '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
  '(helm-substitute-in-filename-stay-on-remote t)
- '(helm-swoop-split-direction (quote split-window-horizontally))
- '(helm-swoop-split-with-multiple-windows nil)
+ '(helm-swoop-split-direction (quote split-window-horizontally) t)
+ '(helm-swoop-split-with-multiple-windows nil t)
  '(magit-branch-prefer-remote-upstream (quote ("master")))
  '(magit-diff-use-overlays nil)
  '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
