@@ -4,7 +4,6 @@
 sudo apt install -y \
      build-essential \
      cmake \
-     cmake\
      gcc \
      git \
      pidgin \
