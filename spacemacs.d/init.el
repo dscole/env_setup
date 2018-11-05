@@ -10,7 +10,7 @@ values."
    ;; Base distribution to use. This is a layer contained in the directory
    ;; `+distribution'. For now available distributions are `spacemacs-base'
    ;; or `spacemacs'. (default 'spacemacs)
-   dotspacemacs-distribution 'spacemacs
+   dotspacemacs-distribution 'spacemacs-docker
    ;; Lazy installation of layers (i.e. layers are installed only when a file
    ;; with a supported type is opened). Possible values are `all', `unused'
    ;; and `nil'. `unused' will lazy install only unused layers (i.e. layers
@@ -1561,7 +1561,12 @@ This function is called at the very end of Spacemacs initialization."
  '(ac-auto-show-menu t)
  '(ac-quick-help-delay 0 t)
  '(ac-use-menu-map t)
- '(avy-all-windows nil t)
+ '(avy-all-windows nil)
+ '(browse-url-browser-function (quote browse-url-chromium))
+ '(browse-url-chromium-arguments
+   (quote
+    ("--user-data-dir=/spare/local/dcole/google-chrome" " %U")))
+ '(browse-url-chromium-program "google-chrome-stable")
  '(compilation-skip-visited t)
  '(confirm-kill-emacs (quote yes-or-no-p))
  '(custom-safe-themes
@@ -1608,7 +1613,6 @@ This function is called at the very end of Spacemacs initialization."
    (quote
     ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
  '(org-id-locations-file "~/org/personal_org/.org-id-locations" t)
- '(org-journal-file-format "%Y%m%d.org")
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
  '(org-log-state-notes-insert-after-drawers t)
@@ -1619,7 +1623,7 @@ This function is called at the very end of Spacemacs initialization."
  '(org-return-follows-link t)
  '(package-selected-packages
    (quote
-    (org-journal winum org-mime fuzzy powerline org-category-capture dash-functional projectile google-this skewer-mode js2-mode simple-httpd dockerfile-mode diminish cov bind-key packed avy highlight iedit smartparens bind-map f s evil goto-chg undo-tree helm helm-core ghub let-alist dash async hydra yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (treemacs-projectile treemacs-evil treemacs ht pfuture ox-reveal org-journal lsp-ui lsp-python lsp-dockerfile helm-ctest cquery company-lsp cmake-ide levenshtein ccls lsp-mode winum org-mime fuzzy powerline org-category-capture dash-functional projectile google-this skewer-mode js2-mode simple-httpd dockerfile-mode diminish cov bind-key packed avy highlight iedit smartparens bind-map f s evil goto-chg undo-tree helm helm-core ghub let-alist dash async hydra yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(paradox-automatically-star nil)
  '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
  '(projectile-generic-command "find -L . -type f -print0")
