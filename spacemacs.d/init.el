@@ -93,7 +93,7 @@ values."
                                       magit-gerrit
                                       jedi
                                       rainbow-mode
-                                      unicode-fonts
+                                      ;; unicode-fonts
                                       dockerfile-mode
                                       google-this
                                       elf-mode
@@ -130,7 +130,7 @@ values."
    dotspacemacs-elpa-timeout 5
    ;; If non nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. (default t)
-   dotspacemacs-check-for-update t
+   dotspacemacs-check-for-update nil
    ;; One of `vim', `emacs' or `hybrid'.
    ;; `hybrid' is like `vim' except that `insert state' is replaced by the
    ;; `hybrid state' with `emacs' key bindings. The value can also be a list
@@ -139,7 +139,7 @@ values."
    ;; (default 'vim)
    dotspacemacs-editing-style 'hybrid
    ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
-   dotspacemacs-verbose-loading nil
+   dotspacemacs-verbose-loading t
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
    ;; banner, `random' chooses a random text banner in `core/banners'
@@ -158,8 +158,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(;;hc-zenburn
-                         my-spacemacs-wombat)
+   dotspacemacs-themes '(hc-zenburn)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -308,6 +307,15 @@ values."
    dotspacemacs-whitespace-cleanup 'changed
    ))
 
+(defun dotspacemacs/user-env ()
+  "Environment variables setup.
+This function defines the environment variables for your Emacs session. By
+default it calls `spacemacs/load-spacemacs-env' which loads the environment
+variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
+See the header of this file for more information."
+  ;; (spacemacs/load-spacemacs-env)
+  )
+
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
@@ -315,14 +323,6 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  ;; (message "BEFORE: helm-projectile-fuzzy-match = (%s)" helm-projectile-fuzzy-match)
-  ;; (setq helm-projectile-fuzzy-match nil)
-  ;; (message "AFTER: helm-projectile-fuzzy-match = (%s)" helm-projectile-fuzzy-match)
-
-  (setq my--ycmd-path "/home/dcole/programs/ycmd/ycmd")
-
-  (setq ycmd-server-command `("python" ,my--ycmd-path "--log" "debug" "--keep_logfiles"))
-  (setq ycmd-global-config (expand-file-name "~/env_setup/.ycm_extra_conf.py"))
   (with-eval-after-load 'ob-ipython
     (print "I don't like you ob-ipython!!")
     (remove-hook 'org-mode-hook 'ob-ipython-auto-configure-kernels)
@@ -355,7 +355,7 @@ you should place your code here."
   (spacemacs/set-leader-keys "gll" 'magit-log-buffer-file)
 
   ;; Set fonts
-  (unicode-fonts-setup)
+  ;; (unicode-fonts-setup)
   ;;------------------ Set custom keybindings (END) -----------------------;;
 
   ;;;;; --------------------- Custom Functions (START) ---------------------;;;;
@@ -365,59 +365,10 @@ you should place your code here."
        ,@body
        (message "%.06f" (float-time (time-since time)))))
 
-  ;; sync files written in /spare/local/dcole/dev to norcompile5.skae
-  ;; (defun sync-to-skae ()
-  ;;   "Sync files from /spare/local/dcole/dev to norcompile5.skae"
-  ;;   (call-process-shell-command (format "sync-to-skae.sh %s &" buffer-file-name) nil nil 0)
-  ;;   )
-
-  ;; (when (string= system-name "dcolelinux.ny.tower-research.com")
-  ;;   (add-hook 'after-save-hook #'sync-to-skae)
-  ;;   (add-hook 'after-revert-hook #'sync-to-skae)
-  ;;   )
-
   ;;Define function that accept a count for the search-forward
   (defun search-forward-count (string count)
     (interactive "sString: \nnCount: ")
     (re-search-forward string nil nil count))
-
-  ;; sync files written in /spare/local/dcole/dev to norcompile5.skae
-  (defun push-personal-org ()
-    (interactive)
-    (print "============================= Push Personal Org ==================================="
-           (get-buffer "rsync personal org"))
-    (print (format "Started at: %s" (current-time-string))
-           (get-buffer "rsync personal org"))
-    (start-process "push-personal-org" "rsync personal org"
-                  "rsync"
-                    "-av"
-                    "--no-p"
-                    "--delete"
-                    "--exclude" "@*"
-                    "-e" "ssh -p 37249"
-                    (expand-file-name "~/org/personal_org/")
-                    "dcole@mydcoledomain.ddns.net::org/")
-    )
-
-  (defun pull-personal-org ()
-    (interactive)
-    (print "============================= Pull Personal Org ==================================="
-           (get-buffer "rsync personal org"))
-    (print (format "Started at: %s" (current-time-string))
-           (get-buffer "rsync personal org"))
-    (start-process "push-personal-org" "rsync personal org"
-                   "rsync"
-                   "-av"
-                   "--no-p"
-                   "--exclude" "@*"
-                   "-e" "ssh -p 37249"
-                   "dcole@mydcoledomain.ddns.net::org/"
-                   (expand-file-name "~/org/personal_org/"))
-    )
-
-  ;; (defun search-forward-prefix (count string)
-  ;;   (interactive "p\nsString: ")
-  ;;   (re-search-forward string nil nil count))
 
   ;;Define function that accept a count for the search-backward
   (defun search-backward-count (string count)
@@ -849,13 +800,6 @@ buffer."
     (define-key helm-find-files-map (kbd "M-g G") (create-helm-ff-wrapper-2 'my-magit-dir-log-popup))
     )
 
-  ;; if remote url is not using the default gerrit port and
-  ;; ssh scheme, need to manually set this variable
-  (setq-default magit-gerrit-ssh-creds "dcole@norgerrit.tower-research.com:29418")
-
-  ;; if necessary, use an alternative remote instead of 'origin'
-  (setq-default magit-gerrit-remote "origin")
-
   ;; Magit setup
 
   (spacemacs/toggle-truncate-lines-on)
@@ -863,9 +807,9 @@ buffer."
   (setq projectile-enable-caching t)
 
   ;; set spaceline (modeline)
-  ;; This creates a new spcaeline modeline named spaceline-ml-dcole-ml
+  ;; This creates a new spcaeline modeline named spaceline-ml-my-new-ml
   ;; See doc: https://github.com/TheBB/spaceline
-  (spaceline-define-segment version-control-dcole
+  (spaceline-define-segment my-version-control
     "Version control information."
     (when vc-mode
       (powerline-raw
@@ -884,7 +828,7 @@ buffer."
                                                      (_ "?")))))
        ))))
 
-  (spaceline-compile 'dcole-ml
+  (spaceline-compile 'my-new-ml
                      '(((persp-name
                          workspace-number
                          window-number)
@@ -901,7 +845,7 @@ buffer."
                        (minor-modes :when active)
                        (mu4e-alert-segment :when active)
                        (erc-track :when active)
-                       (version-control-dcole :when active)
+                       (my-version-control :when active)
                        (org-pomodoro :when active)
                        (org-clock :when active)
                        nyan-cat)
@@ -913,7 +857,7 @@ buffer."
                        (global :when active)
                        (new-version :when active)
                        buffer-position hud))
-  (setq mode-line-format '("%e" (:eval (spaceline-ml-dcole-ml))))
+  (setq mode-line-format '("%e" (:eval (spaceline-ml-my-new-ml))))
   (force-mode-line-update t)
 
 
@@ -1310,9 +1254,9 @@ text and copying to the killring."
 
   ;;         org-remember-templates
   ;;               '(
-  ;;                 ("Todo" ?t "* TODO %^{Brief Description} %^g\n%?\nAdded: %U" "/spare/local/dcole/org/gtd/newgtd.org" "Tasks")
-  ;;                 ("Private" ?p "\n* %^{topic} %T \n%i%?\n" "/spare/local/dcole/org/gtd/privnotes.org")
-  ;;                 ("WordofDay" ?w "\n* %^{topic} \n%i%?\n" "/spare/local/dcole/org/gtd/wotd.org")
+  ;;                 ("Todo" ?t "* TODO %^{Brief Description} %^g\n%?\nAdded: %U" "~/org/gtd/newgtd.org" "Tasks")
+  ;;                 ("Private" ?p "\n* %^{topic} %T \n%i%?\n" "~/org/gtd/privnotes.org")
+  ;;                 ("WordofDay" ?w "\n* %^{topic} \n%i%?\n" "~/org/gtd/wotd.org")
   ;;                 )
 
   ;;         org-agenda-exporter-settings
@@ -1388,6 +1332,7 @@ To be used with `markdown-live-preview-window-function'."
     (read-only-mode 1))
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
+  (add-to-list 'custom-theme-load-path dotspacemacs-directory)
   (load-theme 'my-spacemacs-wombat t)
 
   ;; Start the emacs server so I can connect via emacsclient -t
@@ -1400,154 +1345,6 @@ To be used with `markdown-live-preview-window-function'."
   (setq diff-mode-hook nil)
   )
 
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ac-auto-show-menu t)
- '(ac-quick-help-delay 0 t)
- '(ac-use-menu-map t)
- '(avy-all-windows nil t)
- '(browse-url-browser-function (quote browse-url-chromium))
- '(browse-url-chromium-arguments
-   (quote
-    ("--user-data-dir=/spare/local/dcole/google-chrome" " %U")))
- '(browse-url-chromium-program "google-chrome-stable")
- '(compilation-skip-visited t)
- '(confirm-kill-emacs (quote yes-or-no-p))
- '(custom-safe-themes
-   (quote
-    ("da3cdfc2251906a1887c758048eccf5590d8cfbccf013ea836a2d6003c52782b" "5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
- '(custom-theme-load-path
-   (quote
-    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)) t)
- '(dired-listing-switches "-ahBl --group-directories-first")
- '(display-time-mode t)
- '(ein:use-auto-complete t)
- '(ein:use-auto-complete-superpack t)
- '(electric-indent-mode nil)
- '(eshell-scroll-show-maximum-output nil)
- '(evil-move-cursor-back nil)
- '(evil-want-Y-yank-to-eol t)
- '(flycheck-disabled-checkers (quote (python-flake8)))
- '(flycheck-pylint-use-symbolic-id nil)
- '(font-lock-maximum-decoration (quote ((c++-mode . 2) (t . t))))
- '(global-hl-line-mode nil)
- '(global-origami-mode t)
- '(global-whitespace-mode nil)
- '(helm-boring-file-regexp-list
-   (quote
-    ("\\.o$" "~$" "\\.bin$" "\\.lbin$" "\\.so$" "\\.a$" "\\.ln$" "\\.elc$" "\\.pyc$" "\\.#")))
- '(helm-buffer-max-length nil)
- '(helm-ff-skip-boring-files t)
- '(helm-ff-tramp-not-fancy nil)
- '(helm-google-suggest-default-browser-function (quote browse-url-chromium))
- '(helm-substitute-in-filename-stay-on-remote t)
- '(helm-swoop-split-direction (quote split-window-horizontally) t)
- '(helm-swoop-split-with-multiple-windows nil t)
- '(magit-branch-prefer-remote-upstream (quote ("master")))
- '(magit-diff-use-overlays nil)
- '(magit-log-arguments (quote ("--graph" "--decorate" "--stat" "-n256")))
- '(markdown-command
-   "pandoc -r markdown_github+fenced_code_blocks+fenced_code_attributes -w html -s --highlight-style=zenburn")
- '(markdown-content-type "
-")
- '(markdown-live-preview-window-function (quote markdown-live-preview-window-eww))
- '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
- '(next-error-recenter (quote (4)))
- '(org-agenda-files
-   (quote
-    ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
- '(org-id-locations-file "~/org/personal_org/.org-id-locations" t)
- '(org-log-into-drawer t)
- '(org-log-reschedule (quote time))
- '(org-log-state-notes-insert-after-drawers t)
- '(org-outline-path-complete-in-steps nil)
- '(org-refile-allow-creating-parent-nodes nil)
- '(org-refile-targets (quote ((org-agenda-files :maxlevel . 10))))
- '(org-refile-use-outline-path (quote file))
- '(org-return-follows-link t)
- '(package-selected-packages
-   (quote
-    (winum org-mime fuzzy powerline org-category-capture dash-functional projectile google-this skewer-mode js2-mode simple-httpd dockerfile-mode diminish cov bind-key packed avy highlight iedit smartparens bind-map f s evil goto-chg undo-tree helm helm-core ghub let-alist dash async hydra yapfify unicode-fonts ucs-utils font-utils persistent-soft list-utils pcache smeargle rtags rainbow-mode pyvenv pytest pyenv-mode py-isort py-autopep8 pip-requirements origami orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download mmm-mode markdown-toc magit-gitflow magit-gerrit lua-mode live-py-mode json-mode json-snatcher json-reformat jedi jedi-core python-environment epc ctable concurrent hy-mode htmlize helm-pydoc helm-gitignore helm-company helm-c-yasnippet gnuplot gmail-message-mode ham-mode markdown-mode html-to-markdown gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-ycmd flycheck-pos-tip flycheck evil-magit magit magit-popup git-commit with-editor ein websocket edit-server disaster cython-mode csv-mode company-ycmd ycmd request-deferred deferred company-statistics company-quickhelp pos-tip company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete hc-zenburn-theme ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
- '(paradox-automatically-star nil)
- '(paradox-github-token "a2a26cdef436e3e18b349a99131a780c5d677d55")
- '(projectile-generic-command "find -L . -type f -print0")
- '(python-shell-interpreter "ipython" t)
- '(python-shell-interpreter-args "--simple-prompt -i" t)
- '(python-shell-virtualenv-path "/home/dcole/py3env")
- '(python-shell-virtualenv-root "/home/dcole/py3env")
- '(split-height-threshold 80)
- '(split-width-threshold 160)
- '(term-buffer-maximum-size 100)
- '(truncate-lines t)
- '(undo-tree-auto-save-history nil)
- '(unicode-fonts-block-font-mapping
-   (quote
-    (("Combining Diacritical Marks"
-      ("Symbola"))
-     ("Combining Diacritical Marks Extended"
-      ("Symbola"))
-     ("Combining Diacritical Marks Supplement"
-      ("Symbola"))
-     ("Combining Diacritical Marks for Symbols"
-      ("Symbola"))
-     ("Enclosed Alphanumeric Supplement"
-      ("BabelStone Han"))
-     ("Enclosed Alphanumerics"
-      ("BabelStone Han"))
-     ("Enclosed CJK Letters and Months"
-      ("BabelStone Han"))
-     ("Enclosed Ideographic Supplement"
-      ("BabelStone Han"))
-     ("Mathematical Alphanumeric Symbols"
-      ("Symbola"))
-     ("Mathematical Operators"
-      ("Symbola"))
-     ("Miscellaneous Mathematical Symbols-A"
-      ("Symbola"))
-     ("Miscellaneous Mathematical Symbols-B"
-      ("Symbola"))
-     ("Miscellaneous Symbols"
-      ("Symbola"))
-     ("Miscellaneous Symbols and Arrows"
-      ("Symbola"))
-     ("Miscellaneous Symbols and Pictographs"
-      ("Symbola"))
-     ("Miscellaneous Technical"
-      ("Symbola"))
-     ("Private Use Area"
-      ("FontAwesome:style=Regular" "PowerlineSymbols" "Source Code Pro"))
-     ("Supplemental Mathematical Operators"
-      ("Symbola")))))
- '(unicode-fonts-debug-availability t)
- '(unicode-fonts-fallback-font-list (quote ("Symbola" "Quivira")))
- '(unicode-fonts-ignore-overrides nil)
- '(unicode-fonts-overrides-mapping nil)
- '(unicode-fonts-skip-fonts (quote ("STIX Math")))
- '(whitespace-action nil)
- '(whitespace-display-mappings (quote ((tab-mark 9 [187 9] [92 9]))))
- '(whitespace-line-column 200)
- '(whitespace-style
-   (quote
-    (face tabs trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark)))
- '(ycmd-extra-conf-whitelist
-   (quote
-    ("/spare/local/dcole/dev/*" "/home/dcole/projects/.ycm_extra_conf.py"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(aw-leading-char-face ((t (:foreground "chartreuse" :box nil :height 8.0 :width normal))))
- '(flyspell-duplicate ((t (:underline (:color "forest green" :style wave)))))
- '(flyspell-incorrect ((t (:underline (:color "forest green" :style wave)))))
- '(font-lock-doc-markup-face ((t (:foreground "light steel blue" :weight bold))) t)
- '(font-lock-doc-string-face ((t (:foreground "orange2"))) t)
- '(whitespace-space ((t (:background "#313131" :foreground "#313131")))))
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
@@ -1562,19 +1359,11 @@ This function is called at the very end of Spacemacs initialization."
  '(ac-quick-help-delay 0 t)
  '(ac-use-menu-map t)
  '(avy-all-windows nil)
- '(browse-url-browser-function (quote browse-url-chromium))
- '(browse-url-chromium-arguments
-   (quote
-    ("--user-data-dir=/spare/local/dcole/google-chrome" " %U")))
- '(browse-url-chromium-program "google-chrome-stable")
  '(compilation-skip-visited t)
  '(confirm-kill-emacs (quote yes-or-no-p))
  '(custom-safe-themes
    (quote
     ("da3cdfc2251906a1887c758048eccf5590d8cfbccf013ea836a2d6003c52782b" "5ac8f397c73065285ad65590aa12a75f34bd704cac31cf204a26e1e1688a4ce2" default)))
- '(custom-theme-load-path
-   (quote
-    ("~/.spacemacs.d/" "~/.emacs.d/elpa/spacemacs-theme-20160707.1827/" "~/.emacs.d/" "~/.emacs.d/elpa/hc-zenburn-theme-20150928.933/" custom-theme-directory t)) t)
  '(dired-listing-switches "-ahBl --group-directories-first")
  '(display-time-mode t)
  '(ein:use-auto-complete t)
@@ -1607,11 +1396,11 @@ This function is called at the very end of Spacemacs initialization."
  '(markdown-content-type "
 ")
  '(markdown-live-preview-window-function (quote markdown-live-preview-window-eww))
- '(mode-line-format (quote ("%e" (:eval (spaceline-ml-dcole-ml)))))
+ '(mode-line-format (quote ("%e" (:eval (spaceline-ml-my-new-ml)))))
  '(next-error-recenter (quote (4)))
  '(org-agenda-files
    (quote
-    ("/spare/local/dcole/spacemacs/org/work.org" "/spare/local/dcole/spacemacs/org/meetings.org" "/spare/local/dcole/spacemacs/org/notes.org" "/spare/local/dcole/spacemacs/org/personal_org/FirstAid_course.org" "/spare/local/dcole/spacemacs/org/personal_org/personal.org")))
+    ("~/spacemacs/org/work.org" "~/spacemacs/org/meetings.org" "~/spacemacs/org/notes.org" "~/spacemacs/org/personal_org/FirstAid_course.org" "~/spacemacs/org/personal_org/personal.org")))
  '(org-id-locations-file "~/org/personal_org/.org-id-locations" t)
  '(org-log-into-drawer t)
  '(org-log-reschedule (quote time))
@@ -1629,65 +1418,19 @@ This function is called at the very end of Spacemacs initialization."
  '(projectile-generic-command "find -L . -type f -print0")
  '(python-shell-interpreter "ipython")
  '(python-shell-interpreter-args "--simple-prompt -i")
- '(python-shell-virtualenv-path "/home/dcole/py3env")
- '(python-shell-virtualenv-root "/home/dcole/py3env")
+ '(python-shell-virtualenv-path (file-truename "~/py3"))
+ '(python-shell-virtualenv-root (file-truename "~/py3"))
  '(split-height-threshold 80)
  '(split-width-threshold 160)
  '(term-buffer-maximum-size 100)
  '(truncate-lines t)
  '(undo-tree-auto-save-history nil)
- '(unicode-fonts-block-font-mapping
-   (quote
-    (("Combining Diacritical Marks"
-      ("Symbola"))
-     ("Combining Diacritical Marks Extended"
-      ("Symbola"))
-     ("Combining Diacritical Marks Supplement"
-      ("Symbola"))
-     ("Combining Diacritical Marks for Symbols"
-      ("Symbola"))
-     ("Enclosed Alphanumeric Supplement"
-      ("BabelStone Han"))
-     ("Enclosed Alphanumerics"
-      ("BabelStone Han"))
-     ("Enclosed CJK Letters and Months"
-      ("BabelStone Han"))
-     ("Enclosed Ideographic Supplement"
-      ("BabelStone Han"))
-     ("Mathematical Alphanumeric Symbols"
-      ("Symbola"))
-     ("Mathematical Operators"
-      ("Symbola"))
-     ("Miscellaneous Mathematical Symbols-A"
-      ("Symbola"))
-     ("Miscellaneous Mathematical Symbols-B"
-      ("Symbola"))
-     ("Miscellaneous Symbols"
-      ("Symbola"))
-     ("Miscellaneous Symbols and Arrows"
-      ("Symbola"))
-     ("Miscellaneous Symbols and Pictographs"
-      ("Symbola"))
-     ("Miscellaneous Technical"
-      ("Symbola"))
-     ("Private Use Area"
-      ("FontAwesome:style=Regular" "PowerlineSymbols" "Source Code Pro"))
-     ("Supplemental Mathematical Operators"
-      ("Symbola")))))
- '(unicode-fonts-debug-availability t)
- '(unicode-fonts-fallback-font-list (quote ("Symbola" "Quivira")))
- '(unicode-fonts-ignore-overrides nil)
- '(unicode-fonts-overrides-mapping nil)
- '(unicode-fonts-skip-fonts (quote ("STIX Math")))
  '(whitespace-action nil)
  '(whitespace-display-mappings (quote ((tab-mark 9 [187 9] [92 9]))))
  '(whitespace-line-column 200)
  '(whitespace-style
    (quote
-    (face tabs trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark)))
- '(ycmd-extra-conf-whitelist
-   (quote
-    ("/spare/local/dcole/dev/*" "/home/dcole/projects/.ycm_extra_conf.py"))))
+    (face tabs trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
