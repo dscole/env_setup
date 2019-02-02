@@ -25,15 +25,15 @@ source ~/py2env/bin/activate
 mv -f .emacs.d .emacs.d.old
 git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 git clone https://github.com/dscole/env_setup.git
-ln -s env_setup/spacemacs.d ~/.spacemacs.d
+ln -s env_setup/spacemacs.d .spacemacs.d
 ln -s env_setup/tmux.conf .tmux.conf
-ln -s env_setup/.Xresources -rt ~/
-ln -s env_setup/.bash_profile -rt ~/
-ln -s env_setup/.bashrc -rt ~/
-ln -s env_setup/.rdmrc -rt ~/
-ln -s env_setup/pep8 -rt ~/.config
-ln -s env_setup/powerline -rt ~/.config
-ln -s env_setup/pylintrc -rt ~/.config
+ln -s env_setup/.Xresources -rt ./
+ln -s env_setup/.bash_profile -rt ./
+ln -s env_setup/.bashrc -rt ./
+ln -s env_setup/.rdmrc -rt ./
+ln -s env_setup/pep8 -rt ./.config
+ln -s env_setup/powerline -rt ./.config
+ln -s env_setup/pylintrc -rt ./.config
 
 cd Downloads
 wget http://ftp.gnu.org/gnu/emacs/emacs-25.1.tar.gz
