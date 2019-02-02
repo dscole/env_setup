@@ -327,6 +327,10 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (print "I don't like you ob-ipython!!")
     (remove-hook 'org-mode-hook 'ob-ipython-auto-configure-kernels)
     )
+
+  (setq custom-file (concat dotspacemacs-directory "custom-file.el"))
+  (load custom-file)
+
   )
 
 (defun dotspacemacs/user-config ()
