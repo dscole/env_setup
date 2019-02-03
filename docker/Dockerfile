@@ -1,8 +1,12 @@
-FROM dscole/emacs:spacemacs26
+# it's actually emacs26, they just never changed the name
+FROM spacemacs/emacs25:develop
 
-# Has to be secified before `RUN install-deps`
-ENV UNAME="spacemacser"
-ENV UID="1000"
+# Do not exclude man pages & other documentation
+# Reinstall all currently installed packages in order to get the man pages back
+RUN rm /etc/dpkg/dpkg.cfg.d/excludes \
+  && apt-get update \
+  && dpkg -l | grep ^ii | cut -d' ' -f3 | xargs apt-get install -y --reinstall \
+  &&  rm -r /var/lib/apt/lists/*
 
 # Ubuntu Xenial
 RUN apt-get update && apt-get install \
@@ -31,6 +35,8 @@ RUN apt-get update && apt-get install \
   curl \
   gnupg-agent \
   software-properties-common \
+  cifs-utils \
+  iputils-ping \
   && curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey \
   && add-apt-repository \
   "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
@@ -56,12 +62,6 @@ RUN wget http://releases.llvm.org/${llvm_version}/${llvm_package}.tar.xz -P /tmp
     && rm /tmp/${llvm_package}.tar.xz
 
 
-COPY spacemacs.d "${UHOME}/.spacemacs.d"
-RUN rm "${UHOME}/.spacemacs" "${UHOME}/.spacemacs.d/.spacemacs.env"
-
-# Install layers dependencies and initialize the user
-RUN install-deps
-
 # Install ccls
 RUN git clone --depth=1 --recursive https://github.com/MaskRay/ccls /tmp/ccls \
     && cmake -H/tmp/ccls \
@@ -81,3 +81,11 @@ RUN virtualenv "${UHOME}/py2" \
 
 RUN python3 -m venv "${UHOME}/py3" \
     && ${UHOME}/py3/bin/pip install ${python_packages}
+
+COPY spacemacs.d "${UHOME}/.spacemacs.d"
+RUN rm "${UHOME}/.spacemacs" "${UHOME}/.spacemacs.d/.spacemacs.env"
+
+# Install layers dependencies and initialize the user
+RUN install-deps
+
+CMD ["bash", "-c", "ln -s /home/emacs/.emacs.d -rt $UHOME; emacs; /bin/bash"]
