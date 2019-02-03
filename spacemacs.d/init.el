@@ -1336,6 +1336,11 @@ To be used with `markdown-live-preview-window-function'."
     (read-only-mode 1))
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
+  ;; Get unicode working in ansi-term
+  (defadvice ansi-term (after advise-ansi-term-coding-system)
+    (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
+  (ad-activate 'ansi-term)
+
   (add-to-list 'custom-theme-load-path dotspacemacs-directory)
   (load-theme 'my-spacemacs-wombat t)
 
