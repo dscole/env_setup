@@ -45,8 +45,8 @@ values."
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode
             c-c++-backend 'lsp-ccls
-            c-c++-lsp-executable (file-truename "~/programs/ccls/Release/ccls")
             c-c++-lsp-sem-highlight-method 'font-lock
+            c-c++-lsp-cache-dir ".lsp.cache"
 	    )
      lsp
      docker
