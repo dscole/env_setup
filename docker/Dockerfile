@@ -82,6 +82,8 @@ RUN virtualenv "${UHOME}/py2" \
 RUN python3 -m venv "${UHOME}/py3" \
     && ${UHOME}/py3/bin/pip install ${python_packages}
 
+RUN mkdir -p /mnt/storage
+
 COPY spacemacs.d "${UHOME}/.spacemacs.d"
 RUN rm "${UHOME}/.spacemacs" "${UHOME}/.spacemacs.d/.spacemacs.env"
 
