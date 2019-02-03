@@ -46,7 +46,7 @@ values."
             c-c++-default-mode-for-headers 'c++-mode
             c-c++-backend 'lsp-ccls
             c-c++-lsp-sem-highlight-method 'font-lock
-            c-c++-lsp-cache-dir ".lsp.cache"
+            c-c++-lsp-cache-dir (file-truename "~/.lsp.cache")
 	    )
      lsp
      docker
