@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install \
   gcc-8 \
   g++-8 \
   git \
+  man-db \
   ncurses-dev \
   ninja-build \
   python \
@@ -92,4 +93,4 @@ RUN rm "${UHOME}/.spacemacs" "${UHOME}/.spacemacs.d/.spacemacs.env"
 # Install layers dependencies and initialize the user
 RUN install-deps
 
-CMD ["bash", "-c", "ln -s /home/emacs/.emacs.d -rt $UHOME; emacs; /bin/bash"]
+CMD ["bash", "-c", "ln -s /home/emacs/.emacs.d -rt $UHOME 2> /dev/null; emacs; /bin/bash"]
