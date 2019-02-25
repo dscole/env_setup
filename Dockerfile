@@ -78,12 +78,15 @@ RUN git clone --depth=1 --recursive https://github.com/MaskRay/ccls /tmp/ccls \
 
 # Use virtualenvs for python packages so that pip can be upgraded to latest version, because
 # you can't really upgrade the system installed pip
-ARG python_packages="pip pandas numpy scipy jupyter numba"
+ARG python_packages="pandas numpy scipy jupyter numba"
 RUN virtualenv "${UHOME}/py2" \
-    && ${UHOME}/py2/bin/pip install -U ${python_packages}
+    && ${UHOME}/py2/bin/pip install -U pip twine wheel \
+    && ${UHOME}/py2/bin/pip install ${python_packages}
 
 RUN python3 -m venv "${UHOME}/py3" \
-    && ${UHOME}/py3/bin/pip install -U ${python_packages}
+    && ${UHOME}/py3/bin/pip install -U pip twine wheel \
+    && ${UHOME}/py3/bin/pip install ${python_packages}
+
 
 RUN mkdir -p /mnt/storage
 
