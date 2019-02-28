@@ -96,4 +96,7 @@ RUN rm "${UHOME}/.spacemacs" "${UHOME}/.spacemacs.d/.spacemacs.env"
 # Install layers dependencies and initialize the user
 RUN install-deps
 
-CMD ["bash", "-c", "ln -s /home/emacs/.emacs.d -rt $UHOME 2> /dev/null; emacs; /bin/bash"]
+COPY setup_docker_symlinks.sh /usr/local/sbin
+ENTRYPOINT ["setup_docker_symlinks.sh"]
+
+CMD ["bash", "-c", "emacs; /bin/bash"]
