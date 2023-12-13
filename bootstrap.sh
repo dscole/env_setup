@@ -1,56 +1,53 @@
 # Getting a working ubuntu environment
 
+EMACS_VER=29.1
+GCC_VER=12
 # General packages
 sudo apt install -y \
      build-essential \
      cmake \
      gcc \
      git \
-     pidgin \
-     python \
-     python-dev \
+     htop \
      python3 \
+     python3-dev \
      tig \
      tmux \
      tree \
+     vim \
      virtualenv \
      xclip
 
 cd ~
-virtualenv ~/py2env
-virtualenv -p python3 ~/py3env
+virtualenv -p python3 ~/py3-env
 
-source ~/py2env/bin/activate
+source ~/py3-env/bin/activate
 
+mv -f .bashrc .bashrc.old
 mv -f .emacs.d .emacs.d.old
 git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-git clone https://github.com/dscole/env_setup.git
 ln -s env_setup/spacemacs.d .spacemacs.d
 ln -s env_setup/tmux.conf .tmux.conf
 ln -s env_setup/.Xresources -rt ./
 ln -s env_setup/.bash_profile -rt ./
 ln -s env_setup/.bashrc -rt ./
-ln -s env_setup/.rdmrc -rt ./
 ln -s env_setup/pep8 -rt ./.config
 ln -s env_setup/powerline -rt ./.config
 ln -s env_setup/pylintrc -rt ./.config
 
 cd Downloads
-wget http://ftp.gnu.org/gnu/emacs/emacs-25.1.tar.gz
-tar -xzf emacs-25.1.tar.gz
+wget https://ftpmirror.gnu.org/emacs/emacs-${EMACS_VER}.tar.gz
+tar -xzf emacs-${EMACS_VER}.tar.gz
 cd ..
 
 mkdir programs
 cd programs
 
-mv ~/Downloads/emacs-25.1 .
-git clone https://github/dscole/ace-window.git
-
-# gnome plugin for full screen fix
-# git clone https://github/deadalnix/pixel-saver.git
+mv ~/Downloads/emacs-${EMACS_VER} .
+# git clone https://github/dscole/ace-window.git
 
 # build emacs dependencies
-sudo apt-get build-dep emacs24
+sudo apt build-dep emacs
 sudo apt install -y \
      checkinstall \
      libacl1-dev \
@@ -77,8 +74,19 @@ sudo apt install -y \
      libxt-dev \
      libxv-dev
 
-cd emacs-25.1
-./configure CFLAGS=-no-pie --with-modules --with-xwidgets --with-x-tollkit=gtk3
+# new deps. It's possible above^ deps are unnecessary
+sudo apt install -y \
+     libjansson4 \
+     libjansson-dev \
+     gcc-${GCC_VER} \
+     libgccjit-${GCC_VER}-dev \
+     libgccjit0 \
+     libtree-sitter-dev \
+     libtree-sitter0
+
+CC=gcc-${GCC_VER}
+cd emacs-${EMACS_VER}
+./configure --with-json --with-native-compilation --with-tree-sitter
 make -j7
 sudo make install
 cd ..
@@ -158,25 +166,35 @@ sudo apt install -y docker-engine
 #    Symbola
 mkdir ~/Downloads/fonts
 cd ~/Downloads/fonts
-wget http://babelstone.co.uk/Fonts/1082/BabelStoneHan.zip
-wget http://users/teilar.gr/~g1951d/Symbola.zip
-wget http://fontawesome.io/assets/font-awesome-4.7.0.zip
+# wget http://babelstone.co.uk/Fonts/1082/BabelStoneHan.zip
+# wget http://fontawesome.io/assets/font-awesome-4.7.0.zip
+wget https://fontlibrary.org/assets/downloads/symbola/cf81aeb303c13ce765877d31571dc5c7/symbola.zip
 wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
 wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+wget https://github.com/adobe-fonts/source-code-pro/archive/2.030R-ro/1.050R-it.zip
+wget https://github.com/adobe-fonts/source-sans-pro/archive/2.020R-ro/1.075R-it.zip
+wget https://github.com/adobe-fonts/source-serif-pro/archive/2.000R.zip
 
-unzip BabelStoneHan.zip
-unzip font-awesome-4.7.0.zip
-unzip Symbola.zip
+# unzip BabelStoneHan.zip
+# unzip font-awesome-4.7.0.zip
+unzip symbola.zip
+unzip 1.050R-it.zip
+unzip 1.075R-it.zip
+unzip 2.000R.zip
 
 mkdir -p ~/.fonts
-cp*.ttf font-awesome*/fonts/* ~/.fonts
+cp *.ttf *.otf \
+   source-code-pro-2.030R-ro-1.050R-it/OTF/*.otf \
+   source-serif-2.000R/OTF/*.otf \
+   source-sans-2.020R-ro-1.075R-it/OTF/*.otf \
+   ~/.fonts
 
 mkdir -p ~/.config/fontconfig/conf.d
 cp 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
 fc-cache -fv
 sudo mkfontscale ~/.fonts
 sudo mkfontdir ~/.fonts
-xset fp+ "~/.fonts"
+xset fp+ "${HOME}/.fonts"
 cd -
 
 # install powerline
